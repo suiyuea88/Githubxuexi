@@ -52,7 +52,42 @@ fetch(API)
 
 
             <p>
-            ${project.translation}
+            <h3>
+            📖 中文简介
+            </h3>
+            
+            <p>
+            ${project.analysis["中文简介"]}
+            </p>
+            
+            
+            <h3>
+            🎯 项目分类
+            </h3>
+            
+            <p>
+            ${project.analysis["项目分类"]}
+            </p>
+            
+            
+            <h3>
+            📚 学习价值
+            </h3>
+            
+            <p>
+            ${project.analysis["学习价值"]}
+            </p>
+            
+            
+            <h3>
+            🧠 推荐学习
+            </h3>
+            
+            <p>
+            
+            ${project.analysis["推荐学习"].join("、")}
+            
+            </p>
             </p>
 
 

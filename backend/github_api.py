@@ -76,7 +76,7 @@ def get_hot_projects():
             repo["html_url"],
 
 
-            "description":
+            "translation":
 
             translate(
                 repo["description"]

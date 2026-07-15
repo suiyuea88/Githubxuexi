@@ -1,6 +1,8 @@
 import requests
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
+
 from backend.translator import analyze_project
+
 
 
 def get_hot_projects():
@@ -11,43 +13,37 @@ def get_hot_projects():
     before = today - timedelta(days=30)
 
 
-
     url = "https://api.github.com/search/repositories"
 
 
-    params={
+    params = {
 
         "q":
         f"created:>{before.date()}",
 
-
         "sort":
         "stars",
-
 
         "order":
         "desc",
 
-
         "per_page":
         20
-
     }
 
 
 
-    res=requests.get(
+    res = requests.get(
         url,
         params=params
     )
 
 
-
-    repos=res.json()["items"]
-
+    repos = res.json()["items"]
 
 
-    result=[]
+
+    result = []
 
 
 
@@ -80,31 +76,16 @@ def get_hot_projects():
 
             analyze_project(
 
-            repo["name"],
+                repo["name"],
 
-            repo["description"],
+                repo["description"],
 
-            repo["language"]
+                repo["language"]
 
             )
+
+        })
 
 
 
     return result
-
-
-
-
-
-def translate(text):
-
-
-    if not text:
-
-        return "暂无介绍"
-
-
-    # 第一版简单处理
-    # 后面接AI翻译
-
-    return text

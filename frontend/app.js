@@ -1,20 +1,19 @@
+const API =
+"https://你的Render地址.onrender.com/projects";
 
-fetch(
-"http://127.0.0.1:8000/projects"
-)
 
-.then(
-res=>res.json()
-)
 
-.then(
-data=>{
+fetch(API)
+
+.then(res=>res.json())
+
+.then(data=>{
 
 
 let html="";
 
 
-data.forEach(item=>{
+data.forEach(project=>{
 
 
 html+=`
@@ -23,45 +22,53 @@ html+=`
 
 
 <h2>
-${item.name}
+🔥 ${project.name}
 </h2>
 
 
 <p>
-作者：
-${item.author}
+👤 作者：
+${project.author}
 </p>
-
 
 
 <p class="star">
 
-⭐ ${item.stars}
+⭐ Star:
+${project.stars}
 
 </p>
 
 
 
 <p>
-语言：
-${item.language}
+
+💻 语言：
+
+${project.language}
+
 </p>
 
+
+<hr>
+
+
+<h3>
+中文简介
+</h3>
 
 
 <p>
 
-中文简介：
-
-${item.description}
+${project.translation}
 
 </p>
 
 
 
-<a href="${item.url}" target="_blank">
+<a href="${project.url}" target="_blank">
 
-查看项目
+查看源码
 
 </a>
 
@@ -70,16 +77,27 @@ ${item.description}
 </div>
 
 
-`
+`;
 
 
-})
+
+});
+
 
 
 document.getElementById(
-"list"
+"projects"
 ).innerHTML=html;
 
 
 
 })
+
+.catch(err=>{
+
+document.getElementById(
+"projects"
+).innerHTML=
+"加载失败";
+
+});

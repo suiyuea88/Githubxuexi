@@ -1,6 +1,6 @@
 import requests
 from datetime import datetime,timedelta
-from backend.translator import translate_project
+from backend.translator import analyze_project
 
 
 def get_hot_projects():

@@ -1,61 +1,82 @@
-def translate_project(text):
-
-    if not text:
-        return {
-            "zh":"暂无介绍",
-            "analysis":"暂无分析"
-        }
+def analyze_project(name, description, language):
 
 
-    # 第一版先做基础翻译映射
-    # 后面接AI接口
+    if not description:
+
+        description = "暂无英文介绍"
 
 
-    translations = {
 
-        "framework":
-        "开发框架",
-
-        "agent":
-        "智能体",
-
-        "AI":
-        "人工智能",
-
-        "model":
-        "模型",
-
-        "tool":
-        "工具",
-
-        "library":
-        "代码库",
-
-        "open source":
-        "开源"
-
-    }
+    # 简单规则分析版
+    # 后续接AI大模型
 
 
-    result=text
+    text = description.lower()
 
 
-    for k,v in translations.items():
 
-        result=result.replace(
-            k,
-            v
-        )
+    category = "开发工具"
+
+
+    if "ai" in text or "agent" in text or "model" in text:
+
+        category = "人工智能"
+
+
+
+    elif "web" in text or "frontend" in text:
+
+        category = "Web开发"
+
+
+
+    elif "security" in text or "hack" in text:
+
+        category = "网络安全"
+
+
+
+    elif language == "Python":
+
+        category = "Python项目"
+
 
 
     return {
 
-        "zh":
-        result,
+
+        "中文简介":
+
+        f"""
+{name} 是一个开源 {category} 项目。
+
+该项目主要用于：
+
+{description}
+
+它适合作为开发者学习和研究案例。
+""",
 
 
-        "analysis":
 
-        "这是一个开源项目，主要解决开发效率和技术应用问题，适合作为学习案例。"
+        "项目分类":
+
+        category,
+
+
+
+        "学习价值":
+
+        "★★★★★",
+
+
+
+        "推荐学习":
+
+        [
+            language,
+            "开源项目阅读",
+            "代码实践"
+        ]
 
     }

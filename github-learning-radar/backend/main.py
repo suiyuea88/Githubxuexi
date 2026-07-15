@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from github_api import get_hot_projects
+from backend.github_api import get_hot_projects
 
 
 app = FastAPI(

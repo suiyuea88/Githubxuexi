@@ -79,7 +79,7 @@ fetch(API)
             </p>
             
             
-            <h3>
+           <h3>
             🧠 推荐学习
             </h3>
             
@@ -88,6 +88,42 @@ fetch(API)
             ${project.analysis["推荐学习"].join("、")}
             
             </p>
+            
+            
+            <h3>
+            🔥 为什么热门
+            </h3>
+            
+            <p>
+            
+            ${project.analysis["为什么热门"].join("、")}
+            
+            </p>
+            
+            
+            
+            <h3>
+            📈 难度等级
+            </h3>
+            
+            <p>
+            
+            ${project.analysis["难度等级"]}
+            
+            </p>
+            
+            
+            
+            <h3>
+            📚 学习路线
+            </h3>
+            
+            <p>
+            
+            ${project.analysis["学习路线"].join(" → ")}
+            
+            </p>
+
             </p>
 
 

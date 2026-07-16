@@ -80,7 +80,9 @@ fetch(API_URL)
 
 
 
-        card.innerHTML = `
+card.innerHTML = `
+
+<div class="project-header">
 
 
 <h2>
@@ -88,27 +90,33 @@ fetch(API_URL)
 </h2>
 
 
-
-<p>
-⭐ Star：
-${safeText(project.stars)}
-</p>
+<div class="tags">
 
 
-<p>
-💻 技术：
-${safeText(project.language)}
-</p>
+<span class="tag">
+⭐ ${safeText(project.stars)}
+</span>
+
+
+<span class="tag">
+💻 ${safeText(project.language)}
+</span>
+
+
+
+</div>
+
+
+</div>
 
 
 
 
-<hr>
-
+<div class="section">
 
 
 <h3>
-🧠 一句话认识它
+🧠 一句话认识
 </h3>
 
 
@@ -121,62 +129,152 @@ analysis["一句话介绍"]
 </p>
 
 
+</div>
 
+
+
+
+
+<div class="section">
 
 
 <h3>
-🌍 所属领域
+🌍 技术领域
 </h3>
 
 
-<p>
+<div class="tags">
 
-${safeArray(
+
+${
+
+Array.isArray(analysis["所属领域"])
+
+?
+
 analysis["所属领域"]
-)}
+.map(item=>`
 
-</p>
+<span class="tag blue">
+
+${item}
+
+</span>
+
+`).join("")
+
+:
+
+"<span>暂无</span>"
+
+}
+
+
+</div>
+
+
+</div>
 
 
 
+
+
+
+<div class="section">
 
 
 <h3>
-🚀 它能做什么？
+🚀 可以做什么
 </h3>
 
 
-<p>
+<ul>
 
-${safeArray(
+
+${
+Array.isArray(analysis["可以做什么"])
+
+?
+
 analysis["可以做什么"]
-)}
+.map(item=>`
 
-</p>
+<li>
+${item}
+</li>
+
+`).join("")
+
+:
+
+"<li>暂无</li>"
+
+}
+
+
+</ul>
+
+
+</div>
 
 
 
 
 
-<h3>
-🔥 为什么值得玩？
-</h3>
 
 
-<p>
+<div class="score-box">
+
+
+<div>
+
+🔥 兴趣指数
+
+<br>
+
+<strong>
 
 ${safeText(
-analysis["为什么值得玩"]
+analysis["兴趣指数"]
 )}
 
-</p>
+</strong>
+
+</div>
 
 
 
+<div>
+
+📚 学习价值
+
+<br>
+
+<strong>
+
+${safeText(
+analysis["学习价值"]
+)}
+
+</strong>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="section">
 
 
 <h3>
-🎮 新手怎么玩？
+🎮 新手怎么玩
 </h3>
 
 
@@ -189,11 +287,19 @@ guide["普通用户"]
 </p>
 
 
+</div>
 
+
+
+
+
+
+
+<div class="section">
 
 
 <h3>
-👨‍🎓 适合谁学习？
+👨‍🎓 适合人群
 </h3>
 
 
@@ -206,93 +312,27 @@ analysis["适合人群"]
 </p>
 
 
-
-
-
-<h3>
-⭐ 兴趣指数
-</h3>
-
-
-<p>
-
-${safeText(
-analysis["兴趣指数"]
-)}
-
-</p>
+</div>
 
 
 
 
 
-<h3>
-📚 学习价值
-</h3>
 
 
-<p>
+<a class="github-btn"
 
-${safeText(
-analysis["学习价值"]
-)}
+href="${project.url}"
 
-</p>
+target="_blank">
 
-
-
-
-
-<h3>
-🛠 开发信息
-</h3>
-
-
-<p>
-
-💻 开发运行：
-
-${safeText(
-guide["开发者"]
-)}
-
-</p>
-
-
-<p>
-
-📦 EXE：
-
-${safeText(
-guide["EXE"]
-)}
-
-</p>
-
-
-<p>
-
-🌐 网页部署：
-
-${safeText(
-guide["网页"]
-)}
-
-</p>
-
-
-
-
-
-<a href="${project.url}" target="_blank">
-
-查看 GitHub 源码
+查看源码 🚀
 
 </a>
 
 
-        `;
 
+`;
 
 
         projectsBox.appendChild(card);

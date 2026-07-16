@@ -5,32 +5,47 @@ const projectsBox = document.getElementById("projects");
 
 
 
+
+
 function safe(value){
+
 
     if(value === undefined || value === null || value === ""){
 
-        return "暂无介绍";
+
+        return "暂无";
+
 
     }
+
 
     return value;
 
+
 }
 
 
 
 
-function getArray(value){
+
+function arr(value){
+
 
     if(Array.isArray(value)){
 
+
         return value;
+
 
     }
 
+
     return [];
 
+
 }
+
+
 
 
 
@@ -40,7 +55,7 @@ function getArray(value){
 fetch(API_URL)
 
 
-.then(response=>response.json())
+.then(res=>res.json())
 
 
 .then(data=>{
@@ -48,31 +63,37 @@ fetch(API_URL)
 
     if(!data || data.length===0){
 
+
         projectsBox.innerHTML="暂无项目";
 
+
         return;
+
 
     }
 
 
 
-    showToday(data);
+    updateRecommend(data[0]);
 
 
-    renderCards(data);
+
+    renderProjects(data);
+
 
 
 })
 
 
-.catch(error=>{
+
+.catch(err=>{
 
 
     projectsBox.innerHTML=`
 
     <div class="card">
 
-    加载失败，请检查接口
+    加载失败
 
     </div>
 
@@ -88,21 +109,26 @@ fetch(API_URL)
 
 
 
-// 首页推荐区域
+
+// 更新首页推荐
 
 
-function showToday(data){
-
-
-
-    const item=data[0];
+function updateRecommend(project){
 
 
 
-    const title=document.getElementById("hero-title");
+    const analysis =
+    project.analysis || {};
 
 
-    const desc=document.getElementById("hero-desc");
+
+    const title =
+    document.getElementById("hero-title");
+
+
+
+    const desc =
+    document.getElementById("hero-desc");
 
 
 
@@ -110,40 +136,24 @@ function showToday(data){
 
 
         title.innerHTML=
-        "🔥 "+safe(item.name);
+        "🔥 "+safe(project.name);
 
 
     }
+
 
 
 
     if(desc){
 
 
-        let text="";
-
-
-
-        if(item.analysis){
-
-
-            text=
-            item.analysis["一句话介绍"]
-            ||
-            item.description
-            ||
-            "热门开源项目";
-
-
-        }
-
-
-        desc.innerHTML=safe(text);
+        desc.innerHTML=
+        safe(
+        analysis["一句话介绍"]
+        );
 
 
     }
-
-
 
 
 
@@ -157,12 +167,10 @@ function showToday(data){
 
 
 
-
-
 // 项目卡片
 
 
-function renderCards(data){
+function renderProjects(data){
 
 
 
@@ -170,11 +178,12 @@ function renderCards(data){
 
 
 
-    data.forEach(item=>{
+    data.forEach(project=>{
 
 
 
-        const analysis=item.analysis || {};
+        const analysis =
+        project.analysis || {};
 
 
 
@@ -185,172 +194,197 @@ function renderCards(data){
 
 
 
-        let fields=getArray(
-            analysis["所属领域"]
+        const fields =
+        arr(
+        analysis["所属领域"]
         );
 
 
 
-        let play=getArray(
-            analysis["可以怎么玩"]
+        const things =
+        arr(
+        analysis["可以做什么"]
         );
+
+
+
+        const people =
+        arr(
+        analysis["适合人群"]
+        );
+
+
 
 
 
 
         card.innerHTML=`
 
-        <h2>
 
-        🔥 ${safe(item.name)}
 
-        </h2>
+<h2>
 
+🔥 ${safe(project.name)}
 
+</h2>
 
 
 
-        <div class="tags">
 
 
-        <span>
+<div class="tags">
 
-        ⭐ ${safe(item.stars)}
 
-        </span>
+<span>
 
+⭐ ${safe(project.stars)}
 
-        <span>
+</span>
 
-        💻 ${safe(item.language)}
 
-        </span>
 
+<span>
 
-        </div>
+💻 ${safe(project.language)}
 
+</span>
 
 
 
 
+${
+fields.slice(0,2)
+.map(
+x=>`
 
+<span>${x}</span>
 
-        <h3>
+`
+)
+.join("")
+}
 
-        📌 项目是什么？
 
-        </h3>
+</div>
 
 
 
-        <p>
 
 
-        ${
-            safe(
-            analysis["一句话介绍"]
-            ||
-            item.description
-            )
 
-        }
 
+<h3>
 
-        </p>
+🧠 它是什么？
 
+</h3>
 
 
 
+<p>
 
+${safe(
+analysis["一句话介绍"]
+)}
 
+</p>
 
-        <h3>
 
-        🌍 领域
 
-        </h3>
 
 
 
-        <p>
 
+<h3>
 
-        ${
-            fields.length
+🚀 可以怎么玩？
 
-            ?
+</h3>
 
-            fields.join(" · ")
 
-            :
 
-            "开源项目"
+<p>
 
-        }
 
+${
+things.length
 
-        </p>
+?
 
+things.slice(0,3)
+.map(
+x=>"✅ "+x
+)
+.join("<br>")
 
+:
 
+"查看源码体验"
 
+}
 
 
 
-        <h3>
+</p>
 
-        🚀 怎么玩？
 
-        </h3>
 
 
 
-        <p>
 
 
-        ${
-            play.length
 
-            ?
+<h3>
 
-            play
-            .slice(0,3)
-            .map(
-            x=>"✅ "+x
-            )
-            .join("<br>")
+👨‍🎓 适合
 
-            :
+</h3>
 
-            "查看源码学习项目结构"
 
-        }
+<p>
 
 
-        </p>
+${
+people.length
 
+?
 
+people.slice(0,2)
+.join("、")
 
+:
 
+"开发学习者"
 
+}
 
-        <a
 
-        class="github-btn"
+</p>
 
-        href="${item.url}"
 
-        target="_blank">
 
 
-        查看源码 🚀
 
 
-        </a>
 
+<a
 
-        `;
+class="github-btn"
 
+href="${project.url}"
+
+target="_blank">
+
+
+查看源码 🚀
+
+
+</a>
+
+
+
+
+`;
 
 
 

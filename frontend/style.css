@@ -5,6 +5,7 @@ box-sizing:border-box;
 }
 
 
+
 body{
 
 margin:0;
@@ -13,8 +14,8 @@ margin:0;
 background:
 
 linear-gradient(
-rgba(244,239,228,0.88),
-rgba(244,239,228,0.92)
+rgba(244,239,228,.88),
+rgba(244,239,228,.92)
 ),
 
 url("./chinese-bg.png");
@@ -22,9 +23,7 @@ url("./chinese-bg.png");
 
 background-size:cover;
 
-
 background-position:center;
-
 
 background-attachment:fixed;
 
@@ -35,7 +34,6 @@ color:#332b26;
 font-family:
 
 "Microsoft YaHei",
-"Microsoft JhengHei",
 serif;
 
 
@@ -43,7 +41,11 @@ serif;
 
 
 
-/* 顶部导航 */
+
+
+
+
+/* 顶部 */
 
 
 .header{
@@ -52,7 +54,7 @@ serif;
 height:85px;
 
 
-background:rgba(250,247,239,0.92);
+background:rgba(250,247,239,.92);
 
 
 backdrop-filter:blur(8px);
@@ -105,7 +107,7 @@ height:48px;
 background:#9f3d35;
 
 
-color:#fff;
+color:white;
 
 
 display:flex;
@@ -115,9 +117,6 @@ align-items:center;
 
 
 justify-content:center;
-
-
-font-size:20px;
 
 
 font-weight:bold;
@@ -139,9 +138,6 @@ margin:0;
 font-size:23px;
 
 
-font-weight:500;
-
-
 }
 
 
@@ -149,7 +145,7 @@ font-weight:500;
 .brand p{
 
 
-margin:4px 0 0;
+margin:4px 0;
 
 
 font-size:13px;
@@ -163,60 +159,48 @@ color:#8b7b69;
 
 
 
+
+
 nav{
 
 
 display:flex;
 
 
-gap:42px;
-
-
-height:100%;
-
-
-align-items:center;
+gap:40px;
 
 
 }
 
 
 
-nav span{
+nav a{
 
 
-font-size:16px;
+text-decoration:none;
 
 
 color:#75695d;
 
 
-cursor:pointer;
-
-
-height:100%;
-
-
-display:flex;
-
-
-align-items:center;
-
-
 }
 
 
 
-nav .active{
+nav a.active{
 
 
 color:#9f3d35;
 
 
-border-bottom:3px solid #9f3d35;
+font-weight:bold;
 
 
 }
+
+
+
+
 
 
 
@@ -224,10 +208,81 @@ border-bottom:3px solid #9f3d35;
 .search{
 
 
-font-size:24px;
+font-size:22px;
 
 
 }
+
+
+
+
+
+
+
+
+
+/* 快捷按钮 */
+
+
+.quick-actions{
+
+
+max-width:1200px;
+
+
+margin:25px auto;
+
+
+display:flex;
+
+
+gap:15px;
+
+
+}
+
+
+
+.quick-actions button{
+
+
+background:#faf7ef;
+
+
+border:1px solid #e5dccb;
+
+
+padding:12px 25px;
+
+
+cursor:pointer;
+
+
+font-size:15px;
+
+
+border-radius:30px;
+
+
+transition:.3s;
+
+
+}
+
+
+
+.quick-actions button:hover{
+
+
+background:#9f3d35;
+
+
+color:white;
+
+
+}
+
+
 
 
 
@@ -242,13 +297,13 @@ font-size:24px;
 max-width:1200px;
 
 
-margin:45px auto;
+margin:40px auto;
 
 
 display:flex;
 
 
-background:rgba(250,247,239,0.92);
+background:rgba(250,247,239,.92);
 
 
 border-radius:18px;
@@ -259,12 +314,10 @@ overflow:hidden;
 
 box-shadow:
 
-0 20px 50px rgba(70,40,20,.12);
+0 15px 40px rgba(70,40,20,.12);
 
 
 }
-
-
 
 
 
@@ -287,23 +340,10 @@ padding:40px;
 
 
 
-.title{
-
-
-font-size:18px;
-
-
-letter-spacing:5px;
-
-
-}
-
-
-
 .topic{
 
 
-font-size:88px;
+font-size:90px;
 
 
 font-family:Georgia;
@@ -316,17 +356,6 @@ margin:25px 0;
 
 
 }
-
-
-
-.sub{
-
-
-opacity:.85;
-
-
-}
-
 
 
 
@@ -358,11 +387,7 @@ padding:15px;
 margin-bottom:15px;
 
 
-line-height:1.8;
-
-
 }
-
 
 
 
@@ -370,21 +395,10 @@ line-height:1.8;
 .recommend-right{
 
 
-padding:55px;
+padding:50px;
 
 
 flex:1;
-
-
-}
-
-
-
-
-.small-title{
-
-
-color:#a58b6b;
 
 
 }
@@ -397,23 +411,7 @@ color:#a58b6b;
 font-size:42px;
 
 
-margin:25px 0;
-
-
 font-weight:500;
-
-
-}
-
-
-
-.recommend-right p{
-
-
-font-size:18px;
-
-
-color:#74695d;
 
 
 }
@@ -428,7 +426,7 @@ color:#74695d;
 display:flex;
 
 
-gap:18px;
+gap:20px;
 
 
 margin-top:35px;
@@ -441,10 +439,10 @@ margin-top:35px;
 .feature-box div{
 
 
-background:rgba(241,232,216,.8);
+background:#f1e8d8;
 
 
-padding:18px 30px;
+padding:20px;
 
 
 text-align:center;
@@ -455,44 +453,13 @@ text-align:center;
 
 
 
-.feature-box span{
-
-
-color:#9f3d35;
-
-
-}
-
-
-
 
 button{
-
-
-margin-top:35px;
-
-
-padding:13px 45px;
-
-
-background:#9f3d35;
-
-
-border:none;
-
-
-color:white;
-
-
-font-size:16px;
 
 
 cursor:pointer;
 
 
-border-radius:5px;
-
-
 }
 
 
@@ -501,7 +468,9 @@ border-radius:5px;
 
 
 
-/* 项目列表 */
+
+
+/* 项目区域 */
 
 
 #projects{
@@ -519,7 +488,7 @@ display:grid;
 grid-template-columns:repeat(3,1fr);
 
 
-gap:24px;
+gap:25px;
 
 
 }
@@ -527,19 +496,16 @@ gap:24px;
 
 
 
-
 .card{
 
 
-background:
-
-rgba(255,253,248,.94);
-
-
-border:1px solid #e7dcc9;
+background:rgba(255,253,248,.95);
 
 
 border-radius:18px;
+
+
+border:1px solid #e7dcc9;
 
 
 padding:25px;
@@ -553,9 +519,6 @@ box-shadow:
 0 10px 30px rgba(70,40,20,.08);
 
 
-transition:.3s;
-
-
 }
 
 
@@ -563,12 +526,10 @@ transition:.3s;
 .card:hover{
 
 
-transform:translateY(-6px);
+transform:translateY(-5px);
 
 
-box-shadow:
-
-0 20px 40px rgba(70,40,20,.15);
+transition:.3s;
 
 
 }
@@ -585,10 +546,8 @@ color:#9f3d35;
 font-size:24px;
 
 
-margin-top:0;
-
-
 }
+
 
 
 
@@ -598,7 +557,7 @@ margin-top:0;
 font-size:16px;
 
 
-margin-top:25px;
+margin-top:22px;
 
 
 }
@@ -611,13 +570,14 @@ margin-top:25px;
 font-size:14px;
 
 
-line-height:1.9;
+line-height:1.8;
 
 
 color:#665b50;
 
 
 }
+
 
 
 
@@ -633,10 +593,10 @@ background:#eee1cc;
 padding:5px 12px;
 
 
-margin-right:6px;
-
-
 border-radius:20px;
+
+
+margin:3px;
 
 
 font-size:12px;
@@ -646,13 +606,35 @@ font-size:12px;
 
 
 
-.github-btn{
 
 
-display:block;
 
 
-text-align:center;
+
+/* 项目按钮 */
+
+
+.card-buttons{
+
+
+display:flex;
+
+
+gap:10px;
+
+
+margin-top:25px;
+
+
+}
+
+
+
+
+.card-buttons a{
+
+
+flex:1;
 
 
 background:#332b26;
@@ -661,10 +643,10 @@ background:#332b26;
 color:white;
 
 
-padding:11px;
+text-align:center;
 
 
-margin-top:20px;
+padding:10px;
 
 
 border-radius:8px;
@@ -673,7 +655,79 @@ border-radius:8px;
 text-decoration:none;
 
 
+font-size:14px;
+
+
 }
+
+
+
+
+.card-buttons button{
+
+
+flex:1;
+
+
+background:#9f3d35;
+
+
+border:none;
+
+
+color:white;
+
+
+border-radius:8px;
+
+
+font-size:14px;
+
+
+}
+
+
+
+
+
+
+
+
+
+.github-btn{
+
+
+display:none;
+
+
+}
+
+
+
+
+
+
+
+.hidden-section{
+
+
+max-width:1200px;
+
+
+margin:40px auto;
+
+
+background:white;
+
+
+padding:30px;
+
+
+border-radius:15px;
+
+
+}
+
 
 
 
@@ -699,6 +753,19 @@ nav{
 
 
 display:none;
+
+
+}
+
+
+
+.quick-actions{
+
+
+overflow:auto;
+
+
+padding:0 20px;
 
 
 }
@@ -731,10 +798,10 @@ width:100%;
 #projects{
 
 
-margin:20px;
-
-
 grid-template-columns:1fr;
+
+
+margin:20px;
 
 
 }

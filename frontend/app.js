@@ -45,7 +45,7 @@ ${project.analysis["一句话介绍"]}
 
 <p>
 
-${project.analysis["所属领域"].join(" 、 ")}
+${project.analysis["所属领域"] ? project.analysis["所属领域"].join(" 、 ") : "暂无"}
 
 </p>
 
@@ -59,9 +59,9 @@ ${project.analysis["所属领域"].join(" 、 ")}
 
 <p>
 
-${project.analysis["可以做什么"].join("
+${project.analysis["可以做什么"] ? project.analysis["可以做什么"].join("
 
-✅ ")}
+✅ ") : "暂无"}
 
 </p>
 
@@ -75,7 +75,7 @@ ${project.analysis["可以做什么"].join("
 
 <p>
 
-${project.analysis["使用指南"]["普通用户"]}
+${project.analysis["使用指南"] ? project.analysis["使用指南"]["普通用户"] : "暂无"}
 
 </p>
 
@@ -89,7 +89,7 @@ ${project.analysis["使用指南"]["普通用户"]}
 
 <p>
 
-${project.analysis["适合人群"].join(" 、 ")}
+${project.analysis["适合人群"] ? project.analysis["适合人群"].join(" 、 ") : "暂无"}
 
 </p>
 

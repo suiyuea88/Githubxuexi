@@ -1,4 +1,3 @@
-const API_URL = "/projects";
 const projectsBox = document.getElementById("projects");
 let allProjects = [];
 
@@ -19,17 +18,12 @@ function getFavorites() {
 async function loadProjects() {
   projectsBox.innerHTML = '<div class="state-card"><b>正在加载今日热门项目…</b><p>Render 免费服务首次打开可能需要等待几十秒。</p></div>';
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 25000);
-    const response = await fetch(API_URL, { signal: controller.signal });
-    clearTimeout(timer);
-    if (!response.ok) throw new Error(`接口状态 ${response.status}`);
-    const payload = await response.json();
-    const data = Array.isArray(payload) ? payload : arr(payload.projects);
-    if (!data.length) throw new Error(payload.error || "暂时没有获取到项目");
+    const result = await window.fetchLearningProjects();
+    const data = result.data;
     allProjects = data;
     renderProjects(data);
     updateRecommend(data[0]);
+    document.body.dataset.dataSource = result.source;
   } catch (error) {
     projectsBox.innerHTML = `<div class="state-card error"><b>项目加载失败</b><p>${safe(error.message, "请稍后重试")}</p><button onclick="loadProjects()">重新加载</button></div>`;
   }

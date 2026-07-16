@@ -23,6 +23,7 @@ app.add_middleware(
 
 
 @app.get("/projects")
+@app.get("/api/projects")
 def projects():
     try:
         return get_hot_projects()

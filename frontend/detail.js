@@ -1,4 +1,3 @@
-const API_URL = "/projects";
 const box = document.getElementById("detail");
 const projectName = new URLSearchParams(window.location.search).get("name");
 
@@ -14,10 +13,8 @@ async function loadDetail() {
     return;
   }
   try {
-    const response = await fetch(API_URL);
-    if (!response.ok) throw new Error(`接口状态 ${response.status}`);
-    const payload = await response.json();
-    const data = Array.isArray(payload) ? payload : arr(payload.projects);
+    const result = await window.fetchLearningProjects();
+    const data = result.data;
     const project = data.find(item => item.name === projectName);
     if (!project) throw new Error("项目不存在或已不在今日榜单");
     render(project);

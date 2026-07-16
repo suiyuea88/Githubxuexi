@@ -1,4 +1,5 @@
-const API_URL = "https://githubxuexi.onrender.com/projects";
+const API_URL =
+"https://githubxuexi.onrender.com/projects";
 
 
 const projectsBox =
@@ -10,27 +11,20 @@ let allProjects = [];
 
 
 
+// 安全处理
 
-function safe(value){
+function safe(v){
 
-    if(value === undefined || value === null || value === ""){
-
-        return "暂无";
-
-    }
-
-    return value;
+    return v || "暂无";
 
 }
 
 
 
+function arr(v){
 
-
-function array(value){
-
-    return Array.isArray(value)
-    ? value
+    return Array.isArray(v)
+    ? v
     : [];
 
 }
@@ -41,11 +35,12 @@ function array(value){
 
 
 
+// 获取数据
+
+
 fetch(API_URL)
 
-
 .then(res=>res.json())
-
 
 .then(data=>{
 
@@ -53,32 +48,26 @@ fetch(API_URL)
     allProjects=data;
 
 
-    updateRecommend(data[0]);
-
-
     renderProjects(data);
 
+
+    updateRecommend(data[0]);
 
 
 })
 
+.catch(()=>{
 
 
-.catch(error=>{
+projectsBox.innerHTML=
 
+`
+<div class="card">
 
-    projectsBox.innerHTML=
+加载失败，请检查接口
 
-    `
-
-    <div class="card">
-
-    数据加载失败
-
-    </div>
-
-    `;
-
+</div>
+`;
 
 });
 
@@ -90,54 +79,51 @@ fetch(API_URL)
 
 
 
+// 推荐
+
+
 function updateRecommend(project){
 
 
+if(!project){
 
-    if(!project){
+return;
 
-        return;
-
-    }
-
+}
 
 
-    const analysis =
-    project.analysis || {};
+let a =
+project.analysis || {};
 
 
 
-    const title =
-    document.getElementById("hero-title");
+let title =
+document.getElementById("hero-title");
+
+let desc =
+document.getElementById("hero-desc");
 
 
 
-    const desc =
-    document.getElementById("hero-desc");
+if(title){
+
+title.innerHTML=
+
+"🔥 "+safe(project.name);
+
+}
 
 
 
+if(desc){
 
-    if(title){
+desc.innerHTML=
 
-        title.innerHTML=
+safe(
+a["一句话介绍"]
+);
 
-        "🔥 "+safe(project.name);
-
-    }
-
-
-
-    if(desc){
-
-        desc.innerHTML=
-
-        safe(
-        analysis["一句话介绍"]
-        );
-
-    }
-
+}
 
 
 }
@@ -148,222 +134,223 @@ function updateRecommend(project){
 
 
 
+
+
+// 项目列表
 
 
 function renderProjects(data){
 
 
 
-    projectsBox.innerHTML="";
+projectsBox.innerHTML="";
 
 
 
-    data.forEach(project=>{
 
+data.forEach(project=>{
 
-        const analysis =
-        project.analysis || {};
 
+let a =
+project.analysis || {};
 
 
-        const fields =
-        array(
-        analysis["所属领域"]
-        );
 
+let fields =
+arr(
+a["所属领域"]
+);
 
 
-        const play =
-        array(
-        analysis["可以做什么"]
-        );
 
 
+let play =
+arr(
+a["可以做什么"]
+);
 
-        const card =
-        document.createElement("div");
 
 
-        card.className="card";
 
 
+let card =
+document.createElement("div");
 
-        card.innerHTML=`
 
-        
 
-        <h2 class="project-name">
+card.className="card";
 
 
-        🔥 ${safe(project.name)}
 
 
-        </h2>
+card.innerHTML=`
 
+<h2>
 
+🔥 ${safe(project.name)}
 
+</h2>
 
 
-        <div class="tags">
 
+<div class="tags">
 
-        <span>
 
-        ⭐ ${safe(project.stars)}
+<span>
 
-        </span>
+⭐ ${safe(project.stars)}
 
+</span>
 
 
-        <span>
+<span>
 
-        💻 ${safe(project.language)}
+💻 ${safe(project.language)}
 
-        </span>
+</span>
 
 
 
-        ${
-        fields.slice(0,2)
-        .map(
-        item=>`
+${
 
-        <span>
+fields.slice(0,2)
 
-        ${item}
+.map(
 
-        </span>
+x=>`
 
-        `
-        )
-        .join("")
-        }
+<span>
 
+${x}
 
-        </div>
+</span>
 
+`
 
+)
 
+.join("")
 
+}
 
 
-        <h3>
 
-        🧠 项目是什么？
+</div>
 
-        </h3>
 
 
 
-        <p>
 
+<h3>
 
-        ${safe(
-        analysis["一句话介绍"]
-        )}
+🧠 项目是什么？
 
+</h3>
 
-        </p>
 
+<p>
 
+${safe(
+a["一句话介绍"]
+)}
 
+</p>
 
 
 
 
-        <h3>
 
-        🚀 怎么玩？
 
-        </h3>
 
+<h3>
 
+🚀 怎么玩？
 
-        <p>
+</h3>
 
 
-        ${
-        play.slice(0,2)
-        .map(
-        x=>"✅ "+x
-        )
-        .join("<br>")
+<p>
 
-        }
+${
 
+play.slice(0,2)
 
-        </p>
+.map(
 
+x=>"✅ "+x
 
+)
 
+.join("<br>")
 
+}
 
 
+</p>
 
-        <div class="card-buttons">
 
 
 
-        <a
 
-        href="detail.html?name=${encodeURIComponent(project.name)}"
 
-        >
 
-        📖 查看详情
+<div class="card-buttons">
 
-        </a>
 
+<a
 
+href="detail.html?name=${encodeURIComponent(project.name)}"
 
+>
 
+📖 详情
 
-        <a
+</a>
 
-        href="${project.url}"
 
-        target="_blank"
 
-        >
 
-        🚀 源码
+<a
 
-        </a>
+href="${project.url}"
 
+target="_blank"
 
+>
 
+🚀 源码
 
+</a>
 
 
-        <button
 
-        onclick="favoriteProject('${project.name}')"
 
-        >
+<button
 
-        ⭐收藏
+onclick="favoriteProject('${project.name}')"
 
-        </button>
+>
 
+⭐ 收藏
 
+</button>
 
 
-        </div>
 
+</div>
 
 
 
+`;
 
-        `;
 
 
 
+projectsBox.appendChild(card);
 
-        projectsBox.appendChild(card);
 
 
-
-    });
+});
 
 
 
@@ -377,41 +364,48 @@ function renderProjects(data){
 
 
 
-// 分类筛选
+// 分类
 
 
-function filterCategory(category){
-
-
-
-    const result =
-
-    allProjects.filter(project=>{
-
-
-        const fields =
-
-        array(
-
-        project.analysis?.["所属领域"]
-
-        );
+function filterCategory(type){
 
 
 
-        return fields.some(item=>
-
-        item.includes(category)
-
-        );
+let result =
 
 
-
-    });
-
+allProjects.filter(project=>{
 
 
-    renderProjects(result);
+let fields =
+
+arr(
+
+project.analysis?.["所属领域"]
+
+);
+
+
+
+return fields.some(x=>{
+
+
+return x
+.toLowerCase()
+.includes(
+type.toLowerCase()
+);
+
+
+});
+
+
+
+});
+
+
+
+renderProjects(result);
 
 
 
@@ -420,12 +414,18 @@ function filterCategory(category){
 
 
 
+
+
+
+
+
+// 全部
 
 
 function showAll(){
 
 
-    renderProjects(allProjects);
+renderProjects(allProjects);
 
 
 }
@@ -436,6 +436,9 @@ function showAll(){
 
 
 
+
+
+// 滚动
 
 
 function scrollProjects(){
@@ -461,27 +464,49 @@ behavior:"smooth"
 
 
 
+
+// 收藏
+
+
 function favoriteProject(name){
 
 
 
-let list =
+let favorites =
 
 JSON.parse(
 
 localStorage.getItem("favorites")
 
-|| "[]"
+||"[]"
 
 );
 
 
 
 
-if(!list.includes(name)){
+if(
+favorites.includes(name)
+
+){
 
 
-list.push(name);
+alert(
+
+"已经收藏"
+
+);
+
+
+return;
+
+
+}
+
+
+
+
+favorites.push(name);
 
 
 
@@ -489,22 +514,17 @@ localStorage.setItem(
 
 "favorites",
 
-JSON.stringify(list)
+JSON.stringify(favorites)
 
 );
 
 
 
-alert("收藏成功 ⭐");
+alert(
 
+"收藏成功 ⭐"
 
-
-}else{
-
-
-alert("已经收藏");
-
-}
+);
 
 
 }

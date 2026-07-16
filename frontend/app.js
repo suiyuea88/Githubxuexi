@@ -13,16 +13,13 @@ let allProjects = [];
 
 function safe(value){
 
-
     if(value === undefined || value === null || value === ""){
 
         return "暂无";
 
     }
 
-
     return value;
-
 
 }
 
@@ -31,7 +28,6 @@ function safe(value){
 
 
 function array(value){
-
 
     return Array.isArray(value)
     ? value
@@ -44,8 +40,6 @@ function array(value){
 
 
 
-// 获取项目
-
 
 fetch(API_URL)
 
@@ -56,13 +50,14 @@ fetch(API_URL)
 .then(data=>{
 
 
-    allProjects = data;
+    allProjects=data;
 
 
     updateRecommend(data[0]);
 
 
     renderProjects(data);
+
 
 
 })
@@ -72,7 +67,9 @@ fetch(API_URL)
 .catch(error=>{
 
 
-    projectsBox.innerHTML=`
+    projectsBox.innerHTML=
+
+    `
 
     <div class="card">
 
@@ -93,10 +90,6 @@ fetch(API_URL)
 
 
 
-
-// 首页推荐
-
-
 function updateRecommend(project){
 
 
@@ -114,7 +107,6 @@ function updateRecommend(project){
 
 
 
-
     const title =
     document.getElementById("hero-title");
 
@@ -128,24 +120,21 @@ function updateRecommend(project){
 
     if(title){
 
+        title.innerHTML=
 
-        title.innerHTML =
         "🔥 "+safe(project.name);
-
 
     }
 
 
 
-
     if(desc){
 
+        desc.innerHTML=
 
-        desc.innerHTML =
         safe(
         analysis["一句话介绍"]
         );
-
 
     }
 
@@ -161,45 +150,15 @@ function updateRecommend(project){
 
 
 
-
-
-// 渲染项目
-
-
 function renderProjects(data){
+
 
 
     projectsBox.innerHTML="";
 
 
 
-    if(data.length===0){
-
-
-        projectsBox.innerHTML=
-
-        `
-
-        <div class="card">
-
-        暂无符合项目
-
-        </div>
-
-        `;
-
-
-        return;
-
-
-    }
-
-
-
-
-
     data.forEach(project=>{
-
 
 
         const analysis =
@@ -221,9 +180,8 @@ function renderProjects(data){
 
 
 
-
-
-        const card=document.createElement("div");
+        const card =
+        document.createElement("div");
 
 
         card.className="card";
@@ -232,11 +190,16 @@ function renderProjects(data){
 
         card.innerHTML=`
 
-        <h2>
+        
+
+        <h2 class="project-name">
+
 
         🔥 ${safe(project.name)}
 
+
         </h2>
+
 
 
 
@@ -251,6 +214,7 @@ function renderProjects(data){
         </span>
 
 
+
         <span>
 
         💻 ${safe(project.language)}
@@ -260,8 +224,7 @@ function renderProjects(data){
 
 
         ${
-        fields
-        .slice(0,3)
+        fields.slice(0,2)
         .map(
         item=>`
 
@@ -291,14 +254,16 @@ function renderProjects(data){
         </h3>
 
 
+
         <p>
+
 
         ${safe(
         analysis["一句话介绍"]
         )}
 
-        </p>
 
+        </p>
 
 
 
@@ -313,24 +278,16 @@ function renderProjects(data){
         </h3>
 
 
+
         <p>
 
 
         ${
-        play.length
-
-        ?
-
-        play
-        .slice(0,3)
+        play.slice(0,2)
         .map(
         x=>"✅ "+x
         )
         .join("<br>")
-
-        :
-
-        "查看源码体验"
 
         }
 
@@ -346,25 +303,48 @@ function renderProjects(data){
         <div class="card-buttons">
 
 
+
         <a
 
-        href="${project.url}"
+        href="detail.html?name=${encodeURIComponent(project.name)}"
 
-        target="_blank">
+        >
 
-        🚀 查看源码
+        📖 查看详情
 
         </a>
 
 
 
+
+
+        <a
+
+        href="${project.url}"
+
+        target="_blank"
+
+        >
+
+        🚀 源码
+
+        </a>
+
+
+
+
+
+
         <button
 
-        onclick="favoriteProject('${project.name}')">
+        onclick="favoriteProject('${project.name}')"
 
-        ⭐ 收藏
+        >
+
+        ⭐收藏
 
         </button>
+
 
 
 
@@ -372,7 +352,10 @@ function renderProjects(data){
 
 
 
+
+
         `;
+
 
 
 
@@ -381,6 +364,7 @@ function renderProjects(data){
 
 
     });
+
 
 
 }
@@ -401,37 +385,29 @@ function filterCategory(category){
 
 
     const result =
+
     allProjects.filter(project=>{
 
 
-        const analysis =
-        project.analysis || {};
-
-
-
         const fields =
+
         array(
-        analysis["所属领域"]
+
+        project.analysis?.["所属领域"]
+
         );
 
 
 
-        return fields.some(item=>{
+        return fields.some(item=>
 
+        item.includes(category)
 
-            return item
-            .toLowerCase()
-            .includes(
-            category.toLowerCase()
-            );
-
-
-        });
+        );
 
 
 
     });
-
 
 
 
@@ -444,12 +420,6 @@ function filterCategory(category){
 
 
 
-
-
-
-
-
-// 显示全部
 
 
 function showAll(){
@@ -468,20 +438,18 @@ function showAll(){
 
 
 
-
-// 滚动到项目
-
-
 function scrollProjects(){
 
 
-    document
-    .getElementById("projects")
-    .scrollIntoView({
+document
 
-        behavior:"smooth"
+.getElementById("projects")
 
-    });
+.scrollIntoView({
+
+behavior:"smooth"
+
+});
 
 
 }
@@ -493,50 +461,50 @@ function scrollProjects(){
 
 
 
-// 收藏预留
-
-
 function favoriteProject(name){
 
 
 
-    let favorites =
-    JSON.parse(
-    localStorage.getItem("favorites")
-    || "[]"
-    );
+let list =
+
+JSON.parse(
+
+localStorage.getItem("favorites")
+
+|| "[]"
+
+);
 
 
 
-    if(!favorites.includes(name)){
+
+if(!list.includes(name)){
 
 
-        favorites.push(name);
+list.push(name);
 
 
-        localStorage.setItem(
 
-        "favorites",
+localStorage.setItem(
 
-        JSON.stringify(favorites)
+"favorites",
 
-        );
+JSON.stringify(list)
 
-
-        alert(
-        "收藏成功 ⭐"
-        );
+);
 
 
-    }else{
+
+alert("收藏成功 ⭐");
 
 
-        alert(
-        "已经收藏过了"
-        );
+
+}else{
 
 
-    }
+alert("已经收藏");
+
+}
 
 
 }

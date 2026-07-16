@@ -1,247 +1,71 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>GitHub学习馆</title>
-
-<link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5efe2">
+  <title>GitHub学习馆 · 开源研习书院</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
-
-<body>
-
-
-<header class="header">
-
-
-<div class="brand">
-
-
-<div class="logo">
-GH
-</div>
-
-
-<div>
-
-<h2>
-GitHub学习馆
-</h2>
-
-<p>
-探索 · 学习 · 开源
-</p>
-
-</div>
-
-
-</div>
-
-
-
-
-
-<nav>
-
-
-<a class="active">
-首页
-</a>
-
-
-<a>
-AI探索
-</a>
-
-
-
-<div class="nav-menu">
-
-
-<a id="hotBtn">
-
-热门项目
-
-</a>
-
-
-
-<div class="dropdown">
-
-
-<button onclick="filterCategory('AI')">
-
-🤖 AI神器
-
-</button>
-
-
-<button onclick="filterCategory('Python')">
-
-🐍 Python
-
-</button>
-
-
-<button onclick="filterCategory('Web')">
-
-🌐 Web
-
-</button>
-
-
-<button onclick="filterCategory('工具')">
-
-⚙️ 工具
-
-</button>
-
-
-<button onclick="filterCategory('创意')">
-
-🎨 创意
-
-</button>
-
-
-<button onclick="showAll()">
-
-🔥 全部
-
-</button>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-<a>
-学习路线
-</a>
-
-
-
-<a>
-收藏
-</a>
-
-
-
-</nav>
-
-
-</header>
-
-
-
-
-
-
-
-<!-- 推荐区域 -->
-
-
-<section class="recommend">
-
-
-<div class="recommend-left">
-
-
-<div>
-
-今日推荐
-
-</div>
-
-
-<div class="topic">
-
-01
-
-</div>
-
-
-<p>
-热门开源项目
-</p>
-
-
-</div>
-
-
-
-
-
-<div class="recommend-right">
-
-
-<h1 id="hero-title">
-
-探索开源世界
-
-</h1>
-
-
-<p id="hero-desc">
-
-发现 AI、工具、自动化和有趣项目
-
-</p>
-
-
-
-<button onclick="scrollProjects()">
-
-开始探索
-
-</button>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-
-
-<!-- 项目 -->
-
-
-<div id="projects">
-
-
-加载项目中...
-
-
-</div>
-
-
-
-
-
-
-<script src="config.js"></script>
-<script src="api-client.js"></script>
-<script src="app.js"></script>
-
-
+<body class="academy-home">
+  <header class="academy-header">
+    <button class="academy-brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+      <span class="seal">学</span><span><b>GitHub学习馆</b><small>开源研习 · 知行合一</small></span>
+    </button>
+    <nav class="academy-nav">
+      <button class="active" onclick="showAll()">首页</button>
+      <button onclick="filterCategory('AI')">AI研习</button>
+      <button onclick="scrollProjects()">项目藏馆</button>
+      <button onclick="showFavorites()">我的收藏</button>
+    </nav>
+    <button class="mobile-catalog" onclick="toggleMobileMenu()" aria-label="打开目录">☰</button>
+  </header>
+  <div class="mobile-catalog-panel" id="mobile-menu">
+    <button onclick="showAll();toggleMobileMenu(false)">全部项目</button>
+    <button onclick="filterCategory('AI');toggleMobileMenu(false)">AI 研习</button>
+    <button onclick="filterCategory('Python');toggleMobileMenu(false)">Python</button>
+    <button onclick="filterCategory('Web');toggleMobileMenu(false)">Web 开发</button>
+    <button onclick="showFavorites();toggleMobileMenu(false)">我的收藏</button>
+  </div>
+
+  <main>
+    <section class="academy-hero">
+      <div class="hero-seal-panel"><span>今日研习</span><strong>开</strong><b>源</b><small>取一项目 · 学一技法</small></div>
+      <div class="hero-main">
+        <span class="hero-kicker">探索开源 · 以用促学</span>
+        <h1 id="hero-title">在代码山海间<br><em>找到值得学的项目</em></h1>
+        <p id="hero-desc">每日精选 GitHub 开源项目，用中文讲清用途、安装、运行和二次开发方法。</p>
+        <div class="hero-actions"><button class="primary-ink" onclick="scrollProjects()">进入项目藏馆</button><button class="paper-button" onclick="openFirstLab()">打开今日研习台</button></div>
+        <div class="hero-marks"><span>每日更新</span><i></i><span>中文详解</span><i></i><span>在线研习</span><i></i><span>本地收藏</span></div>
+      </div>
+    </section>
+
+    <section class="study-ribbon" aria-label="项目分类">
+      <div><span class="mini-seal">目</span><p><b>项目目录</b><small>按方向进入藏馆</small></p></div>
+      <button onclick="showAll()"><b>全部</b><small>今日精选</small></button>
+      <button onclick="filterCategory('AI')"><b>AI 神器</b><small>模型与智能体</small></button>
+      <button onclick="filterCategory('Python')"><b>Python</b><small>脚本与自动化</small></button>
+      <button onclick="filterCategory('Web')"><b>Web 开发</b><small>网站与应用</small></button>
+      <button onclick="filterCategory('工具')"><b>开发工具</b><small>效率与工程</small></button>
+      <button onclick="showFavorites()"><b>我的收藏</b><small>继续上次学习</small></button>
+    </section>
+
+    <section class="collection-section" id="collection">
+      <header class="collection-heading"><span>项目藏馆</span><h2>今日值得研习的开源项目</h2><p id="collection-note">先看懂，再运行，最后尝试改动一个小功能。</p></header>
+      <div id="projects"><div class="state-card"><b>正在打开今日项目册…</b><p>正在连接开源数据。</p></div></div>
+    </section>
+  </main>
+
+  <footer class="academy-footer"><div><span class="seal small">学</span><p><b>GitHub学习馆</b><small>不是只收藏项目，而是真正学会如何使用。</small></p></div><p>开源项目版权归各自作者所有 · 学习说明由本站整理</p></footer>
+
+  <div class="lab-backdrop" id="lab" hidden>
+    <section class="study-lab" role="dialog" aria-modal="true" aria-labelledby="lab-title">
+      <header><div><small>知行合一 · 在线研习台</small><h2 id="lab-title">项目研习</h2></div><button onclick="closeLab()" aria-label="关闭">×</button></header>
+      <nav class="lab-tabs"><button class="active" data-tab="preview" onclick="switchLabTab(this)">在线体验</button><button data-tab="guide" onclick="switchLabTab(this)">运行指南</button><button data-tab="notes" onclick="switchLabTab(this)">学习笔记</button></nav>
+      <div class="lab-body" id="lab-body"></div>
+    </section>
+  </div>
+
+  <script src="config.js"></script><script src="api-client.js"></script><script src="app.js"></script>
 </body>
-
 </html>

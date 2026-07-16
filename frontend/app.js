@@ -4,8 +4,13 @@ const API_URL = "https://githubxuexi.onrender.com/projects";
 const projectsBox = document.getElementById("projects");
 
 
+let projectsData = [];
 
-function text(value){
+
+
+
+
+function getText(value){
 
     if(value === undefined || value === null || value === ""){
 
@@ -19,15 +24,10 @@ function text(value){
 
 
 
-function array(value){
 
-    if(Array.isArray(value)){
+function getArray(value){
 
-        return value;
-
-    }
-
-    return [];
+    return Array.isArray(value) ? value : [];
 
 }
 
@@ -37,49 +37,34 @@ function array(value){
 
 fetch(API_URL)
 
-
-.then(response=>{
-
-
-    if(!response.ok){
-
-        throw new Error("接口连接失败");
-
-    }
+.then(res=>res.json())
 
 
-    return response.json();
+.then(data=>{
 
 
-})
+    projectsData=data;
 
 
-.then(projects=>{
+    updateHero(data[0]);
 
 
-    render(projects);
+    renderProjects(data);
 
 
 })
 
 
+.catch(err=>{
 
-.catch(error=>{
 
-
-    projectsBox.innerHTML = `
-
+    projectsBox.innerHTML=`
 
     <div class="card">
 
-
-    加载失败：
-
-    ${error.message}
-
+    加载失败，请检查接口
 
     </div>
-
 
     `;
 
@@ -92,7 +77,68 @@ fetch(API_URL)
 
 
 
-function render(projects){
+
+// 更新顶部推荐
+
+
+function updateHero(project){
+
+
+    if(!project){
+
+        return;
+
+    }
+
+
+
+    const analysis = project.analysis || {};
+
+
+
+    const title =
+    document.getElementById("hero-title");
+
+
+    const desc =
+    document.getElementById("hero-desc");
+
+
+
+
+    if(title){
+
+        title.innerHTML =
+        "🔥 " + getText(project.name);
+
+    }
+
+
+
+    if(desc){
+
+        desc.innerHTML =
+        getText(
+        analysis["一句话介绍"]
+        );
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+// 项目列表
+
+
+function renderProjects(projects){
+
 
 
     projectsBox.innerHTML="";
@@ -102,9 +148,8 @@ function render(projects){
     projects.forEach(project=>{
 
 
-        const a = project.analysis || {};
-
-        const guide = a["使用指南"] || {};
+        const analysis =
+        project.analysis || {};
 
 
 
@@ -120,31 +165,31 @@ function render(projects){
 
 
 
+
 <h2>
 
-🔥 ${text(project.name)}
+🔥 ${getText(project.name)}
 
 </h2>
 
 
 
-
-
 <div class="tags">
 
 
 <span>
 
-⭐ ${text(project.stars)}
+⭐ ${getText(project.stars)}
 
 </span>
 
 
 <span>
 
-💻 ${text(project.language)}
+💻 ${getText(project.language)}
 
 </span>
+
 
 
 </div>
@@ -154,10 +199,9 @@ function render(projects){
 
 
 
-
 <h3>
 
-🧠 这个项目是什么？
+📖 项目是什么
 
 </h3>
 
@@ -165,7 +209,9 @@ function render(projects){
 
 <p>
 
-${text(a["一句话介绍"])}
+${getText(
+analysis["一句话介绍"]
+)}
 
 </p>
 
@@ -174,50 +220,9 @@ ${text(a["一句话介绍"])}
 
 
 
-
-
 <h3>
 
-🌍 它属于什么领域？
-
-</h3>
-
-
-
-<div class="tags">
-
-
-${
-
-array(a["所属领域"])
-
-.map(item=>`
-
-<span>
-
-${item}
-
-</span>
-
-`)
-
-.join("")
-
-}
-
-
-
-</div>
-
-
-
-
-
-
-
-<h3>
-
-🚀 它可以做什么？
+🌍 项目领域
 
 </h3>
 
@@ -225,22 +230,43 @@ ${item}
 
 <p>
 
+${
+getArray(
+analysis["所属领域"]
+)
+.join("  ·  ")
+}
+
+</p>
+
+
+
+
+
+
+<h3>
+
+🚀 可以怎么玩
+
+</h3>
+
+
+<p>
+
 
 ${
+getArray(
+analysis["可以做什么"]
+)
 
-array(a["可以做什么"])
+.map(
+item=>"✅ "+item
+)
 
-.map(item=>`
-
-<br>
-
-✅ ${item}
-
-`)
-
-.join("")
+.join("<br>")
 
 }
+
 
 
 </p>
@@ -251,64 +277,38 @@ array(a["可以做什么"])
 
 
 
-<div class="score-box">
+<div class="info-box">
 
 
 
 <div>
 
-
-🔥 兴趣指数
-
+🔥 热度
 
 <br>
 
-
-${text(a["兴趣指数"])}
-
+${getText(project.stars)}
 
 </div>
 
 
 
-
 <div>
-
 
 📚 学习价值
 
-
 <br>
 
-
-${text(a["学习价值"])}
-
-
-</div>
-
-
+${getText(
+analysis["学习价值"]
+)}
 
 </div>
 
 
 
 
-
-
-
-<h3>
-
-🎮 新手体验方式
-
-</h3>
-
-
-
-<p>
-
-${text(guide["普通用户"])}
-
-</p>
+</div>
 
 
 
@@ -316,34 +316,9 @@ ${text(guide["普通用户"])}
 
 
 
-<h3>
+<a
 
-👨‍🎓 适合哪些人？
-
-</h3>
-
-
-
-<p>
-
-
-${
-
-array(a["适合人群"])
-
-.join(" 、 ")
-
-}
-
-
-</p>
-
-
-
-
-
-
-<a class="github-btn"
+class="github-btn"
 
 href="${project.url}"
 
@@ -354,6 +329,8 @@ target="_blank">
 
 
 </a>
+
+
 
 
 

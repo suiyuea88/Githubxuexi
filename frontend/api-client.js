@@ -3,6 +3,7 @@
   const CACHE_TTL = 30 * 60 * 1000;
   function sessionGet(key){try{return JSON.parse(sessionStorage.getItem(key)||"null")}catch{return null}}
   function sessionSet(key,value){try{sessionStorage.setItem(key,JSON.stringify(value))}catch{}}
+  function rememberSearch(projects,page){const prior=page>1?(sessionGet("search:last")||[]):[],seen=new Set(),combined=[];for(const item of [...prior,...projects]){const key=item.full_name||item.url||item.name;if(!seen.has(key)){seen.add(key);combined.push(item)}}sessionSet("search:last",combined)}
 
   function apiCandidates() {
     const configured = String(window.GITHUB_LEARNING_API_BASE || "").replace(/\/$/, "");
@@ -167,4 +168,14 @@
     }
     throw new Error("报错诊断服务暂时不可用");
   };
+
+  window.searchGitHubProjects = async function (query, page=1) {
+    const raw=String(query||"").trim();if(raw.length<2)throw new Error("请至少输入 2 个字符");
+    const aliases={"tg机器人":"telegram bot","telegram机器人":"telegram bot","电报机器人":"telegram bot","人工智能":"artificial intelligence","聊天机器人":"chatbot","爬虫":"web scraper","自动化":"automation","小程序":"mini app","翻译":"translator"};
+    const normalized=aliases[raw.toLowerCase()]||raw,configured=String(window.GITHUB_LEARNING_API_BASE||"").replace(/\/$/,""),q=encodeURIComponent(raw),pageNumber=Math.min(Math.max(Number(page)||1,1),10);
+    const urls=[...new Set([...(configured?[`${configured}/api/search?q=${q}&page=${pageNumber}`]:[]),`/api/search?q=${q}&page=${pageNumber}`,`/search?q=${q}&page=${pageNumber}`])];
+    for(const url of urls){try{const payload=await fetchJson(url,20000);if(Array.isArray(payload.projects)){rememberSearch(payload.projects,pageNumber);return {...payload,source:"backend"}}}catch{}}
+    try{const payload=await fetchJson(`https://api.github.com/search/repositories?q=${encodeURIComponent(normalized)}&sort=stars&order=desc&per_page=20&page=${pageNumber}`,20000),projects=(payload.items||[]).map(normalize),total=Math.min(Number(payload.total_count)||projects.length,1000);rememberSearch(projects,pageNumber);return {query:raw,github_query:normalized,projects,page:pageNumber,total_count:total,has_more:pageNumber*20<total&&projects.length>0,source:"github"}}catch{throw new Error("暂时无法连接 GitHub 全站搜索")}
+  };
+  window.getLastSearchedProjects = function(){return sessionGet("search:last")||[]};
 })();

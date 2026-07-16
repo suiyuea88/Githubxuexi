@@ -1,5 +1,5 @@
 const projectsBox = document.getElementById("projects");
-let allProjects = [], activeProject = null, activeLabTab = "preview", activeReadme = "", labSessionTimer = null;
+let allProjects = [], todayProjects = [], activeProject = null, activeLabTab = "preview", activeReadme = "", labSessionTimer = null, searchTimer = null, searchSequence = 0, currentSearchQuery = "", currentSearchPage = 1, searchHasMore = false;
 const STUDY_KEY = "github-learning-progress-v1";
 
 function safe(value, fallback = "暂无") { const text=value??fallback; return String(text||fallback).replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[c]); }
@@ -14,7 +14,7 @@ function toggleStudyStep(step,checked){if(!activeProject)return;const state=getS
 
 async function loadProjects(){
   projectsBox.innerHTML='<div class="state-card"><b>正在打开今日项目册…</b><p>首次连接可能需要一点时间。</p></div>';
-  try{const result=await window.fetchLearningProjects();allProjects=result.data;renderProjects(allProjects);updateRecommend(allProjects[0]);document.body.dataset.dataSource=result.source;}
+  try{const result=await window.fetchLearningProjects();todayProjects=result.data;allProjects=[...todayProjects];renderProjects(allProjects);updateRecommend(allProjects[0]);document.body.dataset.dataSource=result.source;}
   catch(error){projectsBox.innerHTML=`<div class="state-card error"><b>项目册暂时打不开</b><p>${safe(error.message)}</p><button onclick="loadProjects()">重新连接</button></div>`}
 }
 
@@ -37,11 +37,15 @@ function findProject(name){return allProjects.find(p=>p.name===name)}
 function repositorySlug(project){if(project.full_name&&project.full_name.includes("/"))return project.full_name;const match=String(project.url||"").match(/github\.com\/([^/]+\/[^/#?]+)/i);return match?match[1].replace(/\.git$/i,""):""}
 function canRunInBrowser(project){const language=String(project.language||"").toLowerCase(),fields=arr(project.analysis?.["所属领域"]).join(" ").toLowerCase();return ["javascript","typescript","html","css","vue","svelte"].includes(language)||fields.includes("web")}
 function stackBlitzUrl(project){const slug=repositorySlug(project);return slug?`https://stackblitz.com/github/${encodeURI(slug)}?embed=1&hideNavigation=1&view=preview`:""}
-function filterCategory(type){const key=type.toLowerCase(),aliases={ai:["人工智能","ai"],工具:["开发工具","工具"],web:["web"],python:["python"]},words=aliases[key]||[key],data=allProjects.filter(p=>arr(p.analysis?.["所属领域"]).some(f=>words.some(w=>String(f).toLowerCase().includes(w))));renderProjects(data);setCollectionNote(`${type} 方向 · 共 ${data.length} 个项目`);scrollProjects();}
-function showAll(){renderProjects(allProjects);setCollectionNote("先看懂，再运行，最后尝试改动一个小功能。");scrollProjects();}
+const CATEGORY_QUERIES={AI:"artificial intelligence topic:ai",Python:"language:python stars:>100",Web:"web application stars:>100",工具:"developer tools stars:>100",自动化:"automation stars:>50",机器人:"telegram bot",数据:"data science stars:>100",移动:"mobile app stars:>100",安全:"cybersecurity stars:>100",游戏:"game engine stars:>100"};
+function filterCategory(type){const query=CATEGORY_QUERIES[type]||type,input=document.getElementById("project-search");input.value=type;runGlobalSearch(query,1,false,type);scrollProjects();}
+function showAll(){allProjects=[...todayProjects];renderProjects(allProjects);setCollectionNote("今日精选 · 也可以从分类查询整个 GitHub");scrollProjects();}
 function showFavorites(){const fav=getFavorites(),data=allProjects.filter(p=>fav.includes(p.name));renderProjects(data);setCollectionNote(`我的收藏 · ${data.length} 个待研习项目`);scrollProjects();}
-function searchProjects(value){const keyword=String(value||"").trim().toLowerCase();if(!keyword){renderProjects(allProjects);setCollectionNote("先看懂，再运行，最后尝试改动一个小功能。");return}const result=allProjects.filter(p=>{const a=p.analysis||{},text=[p.name,p.author,p.language,a["一句话介绍"],...arr(a["所属领域"]),...arr(a["可以做什么"])].join(" ").toLowerCase();return text.includes(keyword)});renderProjects(result);setCollectionNote(`搜索“${value}” · 找到 ${result.length} 个项目`)}
-function clearProjectSearch(){const input=document.getElementById("project-search");input.value="";searchProjects("");input.focus()}
+function scheduleProjectSearch(value){clearTimeout(searchTimer);const query=String(value||"").trim();if(!query){clearProjectSearch(false);return}if(query.length<2){setCollectionNote("请至少输入 2 个字符");return}searchTimer=setTimeout(()=>runGlobalSearch(query),550)}
+async function runGlobalSearch(value,page=1,append=false,label=""){const query=String(value||"").trim();if(query.length<2)return;const requestedPage=Math.min(Math.max(Number(page)||1,1),10),sequence=++searchSequence;currentSearchQuery=query;if(!append){setCollectionNote(`正在 GitHub 全站查询${label?`“${label}”分类`:`“${query}”`}…`);projectsBox.innerHTML='<div class="state-card search-loading"><b>正在打开 GitHub 项目库…</b><p>每个分类默认展示 20 个热门项目，并可继续加载。</p></div>'}else setLoadMoreState("正在加载更多…",true);try{const result=await window.searchGitHubProjects(query,requestedPage);if(sequence!==searchSequence)return;const incoming=result.projects||[];currentSearchPage=requestedPage;if(append){const seen=new Set(allProjects.map(p=>p.full_name||p.url||p.name));allProjects=[...allProjects,...incoming.filter(p=>!seen.has(p.full_name||p.url||p.name))]}else allProjects=incoming;searchHasMore=Boolean(result.has_more);renderProjects(allProjects);if(searchHasMore)addLoadMoreButton();const title=label||value,converted=result.github_query&&result.github_query.toLowerCase()!==query.toLowerCase()?` · 已识别为“${result.github_query}”`:"";setCollectionNote(`${label?`${title} 分类`:`搜索“${title}”`} · 已显示 ${allProjects.length} / ${result.total_count||allProjects.length} 个项目${converted}`)}catch(error){if(sequence!==searchSequence)return;if(append)addLoadMoreButton("加载失败，点击重试",requestedPage);else projectsBox.innerHTML=`<div class="state-card error"><b>GitHub 查询失败</b><p>${safe(error.message)}</p><button onclick="runGlobalSearch(currentSearchQuery)">重新加载</button></div>`}}
+function addLoadMoreButton(label="加载更多 GitHub 项目",page=currentSearchPage+1){const wrap=document.createElement("div");wrap.className="load-more-wrap";wrap.innerHTML=`<button onclick="runGlobalSearch(currentSearchQuery,${Number(page)},true)">${label}</button>`;projectsBox.appendChild(wrap)}
+function setLoadMoreState(label,disabled=false){const button=document.querySelector(".load-more-wrap button");if(button){button.textContent=label;button.disabled=disabled}}
+function clearProjectSearch(focus=true){clearTimeout(searchTimer);searchSequence++;currentSearchQuery="";currentSearchPage=1;searchHasMore=false;const input=document.getElementById("project-search");input.value="";allProjects=[...todayProjects];renderProjects(allProjects);setCollectionNote("今日精选 · 也可以从分类查询整个 GitHub");if(focus)input.focus()}
 function setCollectionNote(text){document.getElementById("collection-note").textContent=text;}
 function scrollProjects(){document.getElementById("collection").scrollIntoView({behavior:"smooth"});}
 function toggleMobileMenu(force){const el=document.getElementById("mobile-menu");el.classList.toggle("open",typeof force==="boolean"?force:undefined)}

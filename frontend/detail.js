@@ -15,7 +15,8 @@ async function loadDetail() {
   try {
     const result = await window.fetchLearningProjects();
     const data = result.data;
-    const project = data.find(item => item.name === projectName);
+    let project = data.find(item => item.name === projectName);
+    if (!project && window.getLastSearchedProjects) project = window.getLastSearchedProjects().find(item => item.name === projectName);
     if (!project) throw new Error("项目不存在或已不在今日榜单");
     render(project);
   } catch (error) {

@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 from requests import RequestException
 
-from backend.github_api import get_hot_projects
+from backend.github_api import get_hot_projects, search_projects
 from backend.translation_service import translate_to_chinese
 from backend.readme_service import get_readme
 from backend.runtime_probe import probe_runtime
@@ -44,6 +44,15 @@ def projects():
         return get_hot_projects()
     except RequestException as exc:
         return {"error": "GitHub 数据暂时不可用，请稍后重试", "detail": str(exc), "projects": []}
+
+
+@app.get("/search")
+@app.get("/api/search")
+def search(q: str, page: int = 1):
+    try:
+        return search_projects(q, page=page)
+    except (RequestException, ValueError) as exc:
+        return {"error": str(exc), "query": q, "projects": [], "page": page, "total_count": 0, "has_more": False}
 
 
 @app.get("/health")

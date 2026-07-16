@@ -27,6 +27,13 @@
     <button onclick="filterCategory('AI');toggleMobileMenu(false)">AI 研习</button>
     <button onclick="filterCategory('Python');toggleMobileMenu(false)">Python</button>
     <button onclick="filterCategory('Web');toggleMobileMenu(false)">Web 开发</button>
+    <button onclick="filterCategory('工具');toggleMobileMenu(false)">开发工具</button>
+    <button onclick="filterCategory('自动化');toggleMobileMenu(false)">自动化</button>
+    <button onclick="filterCategory('机器人');toggleMobileMenu(false)">机器人</button>
+    <button onclick="filterCategory('数据');toggleMobileMenu(false)">数据科学</button>
+    <button onclick="filterCategory('移动');toggleMobileMenu(false)">移动应用</button>
+    <button onclick="filterCategory('安全');toggleMobileMenu(false)">网络安全</button>
+    <button onclick="filterCategory('游戏');toggleMobileMenu(false)">游戏开发</button>
     <button onclick="openTranslator();toggleMobileMenu(false)">小白翻译</button>
     <button onclick="openLearningCenter();toggleMobileMenu(false)">学习中心</button>
     <button onclick="showFavorites();toggleMobileMenu(false)">我的收藏</button>
@@ -51,13 +58,17 @@
       <button onclick="filterCategory('Python')"><b>Python</b><small>脚本与自动化</small></button>
       <button onclick="filterCategory('Web')"><b>Web 开发</b><small>网站与应用</small></button>
       <button onclick="filterCategory('工具')"><b>开发工具</b><small>效率与工程</small></button>
-      <button onclick="openTranslator()"><b>小白翻译</b><small>README 与报错</small></button>
-      <button onclick="openLearningCenter()"><b>学习中心</b><small>进度与路线</small></button>
-      <button onclick="showFavorites()"><b>我的收藏</b><small>继续上次学习</small></button>
+      <button onclick="filterCategory('自动化')"><b>自动化</b><small>工作流与脚本</small></button>
+      <button onclick="filterCategory('机器人')"><b>机器人</b><small>TG 与聊天机器人</small></button>
+      <button onclick="filterCategory('数据')"><b>数据科学</b><small>分析与可视化</small></button>
+      <button onclick="filterCategory('移动')"><b>移动应用</b><small>Android 与 iOS</small></button>
+      <button onclick="filterCategory('安全')"><b>网络安全</b><small>检测与防护</small></button>
+      <button onclick="filterCategory('游戏')"><b>游戏开发</b><small>引擎与案例</small></button>
     </section>
+    <section class="study-utilities" aria-label="学习工具"><button onclick="openTranslator()"><b>译</b><span>小白翻译<small>README 与报错</small></span></button><button onclick="openLearningCenter()"><b>学</b><span>学习中心<small>进度与路线</small></span></button><button onclick="showFavorites()"><b>藏</b><span>我的收藏<small>继续上次学习</small></span></button></section>
 
     <section class="collection-section" id="collection">
-      <header class="collection-heading"><span>项目藏馆</span><h2>今日值得研习的开源项目</h2><p id="collection-note">先看懂，再运行，最后尝试改动一个小功能。</p><label class="project-search"><span>查</span><input id="project-search" type="search" placeholder="搜索项目名、语言、用途或标签" oninput="searchProjects(this.value)"><button onclick="clearProjectSearch()" type="button">清空</button></label></header>
+      <header class="collection-heading"><span>项目藏馆</span><h2>今日值得研习的开源项目</h2><p id="collection-note">今日精选 · 也可以从分类查询整个 GitHub</p><label class="project-search"><span>查</span><input id="project-search" type="search" placeholder="搜索整个 GitHub，如：TG机器人、Python 爬虫" oninput="scheduleProjectSearch(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();runGlobalSearch(this.value)}"><button onclick="clearProjectSearch()" type="button">清空</button></label></header>
       <div id="projects"><div class="state-card"><b>正在打开今日项目册…</b><p>正在连接开源数据。</p></div></div>
     </section>
   </main>

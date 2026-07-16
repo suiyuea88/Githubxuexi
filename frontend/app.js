@@ -136,7 +136,7 @@ fetch(API)
             
             <p>
             
-            ${project.analysis["推荐学习"].join("、")}
+            ${project.analysis["推荐学习"] ? project.analysis["推荐学习"].join("、") : "暂无"}
             
             </p>
             
@@ -147,7 +147,7 @@ fetch(API)
             
             <p>
             
-            ${project.analysis["为什么热门"].join("、")}
+            ${project.analysis["为什么热门"] ? project.analysis["为什么热门"].join("、") : "暂无"}
             
             </p>
             
@@ -171,7 +171,7 @@ fetch(API)
             
             <p>
             
-            ${project.analysis["学习路线"].join(" → ")}
+            ${project.analysis["学习路线"] ? project.analysis["学习路线"].join(" → ") : "暂无"}
             
             </p>
 

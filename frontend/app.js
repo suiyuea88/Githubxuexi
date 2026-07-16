@@ -1,5 +1,5 @@
 const projectsBox = document.getElementById("projects");
-let allProjects = [], activeProject = null, activeLabTab = "preview";
+let allProjects = [], activeProject = null, activeLabTab = "preview", labSessionTimer = null;
 
 function safe(value, fallback = "暂无") { const text=value??fallback; return String(text||fallback).replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[c]); }
 function safeUrl(value){try{const u=new URL(String(value||""),window.location.href);return ["http:","https:"].includes(u.protocol)?safe(u.href):"#"}catch{return "#"}}
@@ -39,8 +39,8 @@ function favoriteProject(button){const name=button.dataset.project,f=getFavorite
 
 function openFirstLab(){if(allProjects[0])openLab(allProjects[0]);else scrollProjects()}
 function openLabByButton(button){const p=findProject(button.dataset.name);if(p)openLab(p)}
-function openLab(project){activeProject=project;activeLabTab="preview";document.getElementById("lab-title").textContent=project.name;document.querySelectorAll(".lab-tabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab==="preview"));document.getElementById("lab").hidden=false;document.body.classList.add("modal-open");renderLab();}
-function closeLab(){document.getElementById("lab").hidden=true;document.body.classList.remove("modal-open");}
+function openLab(project){activeProject=project;activeLabTab="preview";clearTimeout(labSessionTimer);document.getElementById("lab-title").textContent=project.name;document.querySelectorAll(".lab-tabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab==="preview"));document.getElementById("lab").hidden=false;document.body.classList.add("modal-open");renderLab();labSessionTimer=setTimeout(closeLab,10*60*1000);}
+function closeLab(){clearTimeout(labSessionTimer);document.getElementById("lab").hidden=true;document.getElementById("lab-body").replaceChildren();activeProject=null;document.body.classList.remove("modal-open");}
 function switchLabTab(button){activeLabTab=button.dataset.tab;document.querySelectorAll(".lab-tabs button").forEach(b=>b.classList.toggle("active",b===button));renderLab();}
 function renderLab(){
   const p=activeProject,a=p.analysis||{},guide=a["使用指南"]||{},body=document.getElementById("lab-body");
@@ -55,5 +55,11 @@ function renderLab(){
   }
 }
 function saveStudyNote(){const value=document.getElementById("study-note").value;localStorage.setItem(`study-note:${activeProject.name}`,value);document.getElementById("note-status").textContent="已保存";}
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.getElementById("lab").hidden)closeLab()});
+
+function openTranslator(){document.getElementById("translator").hidden=false;document.body.classList.add("modal-open");setTimeout(()=>document.getElementById("translate-source").focus(),30)}
+function closeTranslator(){clearTranslation();document.getElementById("translator").hidden=true;document.body.classList.remove("modal-open")}
+function clearTranslation(){document.getElementById("translate-source").value="";document.getElementById("translate-count").textContent="0 / 6000";document.getElementById("translation-result").innerHTML='<div class="translation-empty">翻译后，这里会同时显示中文内容和开源术语解释。</div>'}
+async function runTranslation(){const source=document.getElementById("translate-source").value.trim(),box=document.getElementById("translation-result");if(!source){box.innerHTML='<div class="translation-empty error-text">请先粘贴需要翻译的英文。</div>';return}box.innerHTML='<div class="translation-empty">正在理解并翻译…</div>';try{const result=await window.translateLearningText(source);box.innerHTML=`<article class="translated-copy">${safe(result.translation).replace(/\n/g,"<br>")}</article>${arr(result.glossary).length?`<div class="glossary"><b>本段开源术语</b>${result.glossary.map(x=>`<span><code>${safe(x.term)}</code>${safe(x.meaning)}</span>`).join("")}</div>`:""}`}catch(error){box.innerHTML=`<div class="translation-empty error-text">${safe(error.message)}</div>`}}
+document.getElementById("translate-source").addEventListener("input",e=>document.getElementById("translate-count").textContent=`${e.target.value.length} / 6000`);
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!document.getElementById("translator").hidden)closeTranslator();else if(!document.getElementById("lab").hidden)closeLab()});
 loadProjects();

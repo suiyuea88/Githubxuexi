@@ -99,4 +99,21 @@
       throw new Error(`数据连接失败，请稍后重试（${error.message}）`);
     }
   };
+
+  window.translateLearningText = async function (text) {
+    const configured = String(window.GITHUB_LEARNING_API_BASE || "").replace(/\/$/, "");
+    const urls = [...new Set([...(configured ? [`${configured}/api/translate`] : []), "/api/translate", "/translate"] )];
+    for (const url of urls) {
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 20000);
+        const response = await fetch(url, { method: "POST", signal: controller.signal, headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ text }) });
+        clearTimeout(timer);
+        if (!response.ok) continue;
+        const payload = await response.json();
+        if (payload.translation) return payload;
+      } catch {}
+    }
+    throw new Error("翻译后端暂时不可用，请确认 Render Web Service 已启动");
+  };
 })();

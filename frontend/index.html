@@ -24,35 +24,24 @@
 
 
 <div class="logo">
-
 GH
-
 </div>
 
 
-
-<div class="brand-text">
-
+<div>
 
 <h2>
-
 GitHub学习馆
-
 </h2>
 
-
 <p>
-
 探索 · 学习 · 开源
-
 </p>
 
-
 </div>
 
 
 </div>
-
 
 
 
@@ -61,53 +50,95 @@ GitHub学习馆
 <nav>
 
 
-<a class="active" href="#home">
-
+<a class="active">
 首页
-
 </a>
 
 
-<a href="#ai">
-
+<a>
 AI探索
-
 </a>
 
 
-<a href="#hot">
+
+<div class="nav-menu">
+
+
+<a id="hotBtn">
 
 热门项目
 
 </a>
 
 
-<a href="#learn">
 
-学习路线
-
-</a>
+<div class="dropdown">
 
 
-<a href="#favorite">
+<button onclick="filterCategory('AI')">
 
-收藏
+🤖 AI神器
 
-</a>
-
-
-</nav>
+</button>
 
 
+<button onclick="filterCategory('Python')">
+
+🐍 Python
+
+</button>
 
 
+<button onclick="filterCategory('Web')">
 
-<div class="search">
+🌐 Web
 
-🔍
+</button>
+
+
+<button onclick="filterCategory('工具')">
+
+⚙️ 工具
+
+</button>
+
+
+<button onclick="filterCategory('创意')">
+
+🎨 创意
+
+</button>
+
+
+<button onclick="showAll()">
+
+🔥 全部
+
+</button>
+
+
 
 </div>
 
+
+</div>
+
+
+
+
+<a>
+学习路线
+</a>
+
+
+
+<a>
+收藏
+</a>
+
+
+
+</nav>
 
 
 </header>
@@ -118,180 +149,41 @@ AI探索
 
 
 
-
-<!-- 快速分类入口 -->
-
-
-<section class="quick-actions">
+<!-- 推荐区域 -->
 
 
-<button onclick="filterCategory('AI')">
-
-🤖 AI项目
-
-</button>
-
-
-
-<button onclick="filterCategory('Python')">
-
-🐍 Python
-
-</button>
-
-
-
-<button onclick="filterCategory('Web')">
-
-🌐 Web
-
-</button>
-
-
-
-<button onclick="filterCategory('工具')">
-
-⚙️ 工具
-
-</button>
-
-
-
-<button onclick="showAll()">
-
-🔥 全部项目
-
-</button>
-
-
-</section>
-
-
-
-
-
-
-
-
-<section class="recommend" id="home">
-
+<section class="recommend">
 
 
 <div class="recommend-left">
 
 
-
-<div class="title">
+<div>
 
 今日推荐
 
 </div>
 
 
-
 <div class="topic">
 
-AI
+01
 
 </div>
 
 
-
-<div class="sub">
-
-热门技术方向
-
-</div>
-
-
-
-
-<div class="divider"></div>
-
-
-
-
-
-<div class="recommend-item">
-
-
-🔥 热门趋势
-
-
-<br>
-
-
-<span>
-
-AI / 开源工具
-
-</span>
+<p>
+热门开源项目
+</p>
 
 
 </div>
-
-
-
-
-
-<div class="recommend-item">
-
-
-📚 学习难度
-
-
-<br>
-
-
-<span>
-
-⭐⭐⭐
-
-</span>
-
-
-</div>
-
-
-
-
-<div class="recommend-item">
-
-
-🎯 推荐指数
-
-
-<br>
-
-
-<span>
-
-★★★★★
-
-</span>
-
-
-</div>
-
-
-
-</div>
-
-
 
 
 
 
 
 <div class="recommend-right">
-
-
-<div class="small-title">
-
-今日发现
-
-</div>
-
 
 
 <h1 id="hero-title">
@@ -301,71 +193,11 @@ AI / 开源工具
 </h1>
 
 
-
 <p id="hero-desc">
 
-每天发现值得体验的热门项目
+发现 AI、工具、自动化和有趣项目
 
 </p>
-
-
-
-
-
-<div class="feature-box">
-
-
-<div>
-
-领域
-
-<br>
-
-<span>
-
-AI
-
-</span>
-
-</div>
-
-
-
-<div>
-
-热度
-
-<br>
-
-<span>
-
-★★★★★
-
-</span>
-
-</div>
-
-
-
-<div>
-
-玩法
-
-<br>
-
-<span>
-
-立即体验
-
-</span>
-
-</div>
-
-
-
-</div>
-
-
 
 
 
@@ -376,12 +208,9 @@ AI
 </button>
 
 
-
-
 </div>
 
 
-
 </section>
 
 
@@ -392,64 +221,16 @@ AI
 
 
 
-<section id="projects">
+<!-- 项目 -->
 
 
-正在加载热门项目...
+<div id="projects">
 
 
-</section>
+加载项目中...
 
 
-
-
-
-
-
-
-<section id="learn" class="hidden-section">
-
-
-<h2>
-
-📚 学习路线
-
-</h2>
-
-
-<p>
-
-后续开放：
-
-GitHub入门 → 项目运行 → 修改代码 → 部署上线
-
-</p>
-
-
-</section>
-
-
-
-
-
-<section id="favorite" class="hidden-section">
-
-
-<h2>
-
-⭐ 我的收藏
-
-</h2>
-
-
-<p>
-
-收藏功能即将上线
-
-</p>
-
-
-</section>
+</div>
 
 
 
@@ -460,6 +241,5 @@ GitHub入门 → 项目运行 → 修改代码 → 部署上线
 
 
 </body>
-
 
 </html>

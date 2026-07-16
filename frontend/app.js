@@ -77,7 +77,58 @@ fetch(API)
             <p>
             ${project.analysis["学习价值"]}
             </p>
+
+            <h3>
+            🛠️ 如何使用
+            </h3>
             
+            
+            <p>
+            👤 普通用户：
+            
+            ${project.analysis["使用指南"]["普通用户"]}
+            
+            </p>
+            
+            
+            <p>
+            💻 开发运行：
+            
+            ${project.analysis["使用指南"]["开发者运行"]}
+            
+            </p>
+            
+            
+            <p>
+            📦 安装方式：
+            
+            ${project.analysis["使用指南"]["安装方式"]}
+            
+            </p>
+            
+            
+            <p>
+            🪟 EXE支持：
+            
+            ${project.analysis["使用指南"]["是否支持EXE"]}
+            
+            </p>
+            
+            
+            <p>
+            🌐 网页部署：
+            
+            ${project.analysis["使用指南"]["是否支持网页部署"]}
+            
+            </p>
+            
+            
+            <p>
+            ⭐ 二次开发：
+            
+            ${project.analysis["使用指南"]["二次开发难度"]}
+            
+            </p>
             
            <h3>
             🧠 推荐学习

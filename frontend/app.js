@@ -1,28 +1,34 @@
 const API_URL = "https://githubxuexi.onrender.com/projects";
 
 
-const projectsBox =
-document.getElementById("projects");
+const projectsBox = document.getElementById("projects");
 
 
 
-function text(v){
+function safe(value){
 
-    if(v === undefined || v === null || v === ""){
+    if(value === undefined || value === null || value === ""){
 
-        return "暂无";
+        return "暂无介绍";
 
     }
 
-    return v;
+    return value;
 
 }
 
 
 
-function list(v){
 
-    return Array.isArray(v) ? v : [];
+function getArray(value){
+
+    if(Array.isArray(value)){
+
+        return value;
+
+    }
+
+    return [];
 
 }
 
@@ -34,22 +40,32 @@ function list(v){
 fetch(API_URL)
 
 
-.then(res=>res.json())
+.then(response=>response.json())
 
 
 .then(data=>{
 
 
-    updateRecommend(data);
+    if(!data || data.length===0){
+
+        projectsBox.innerHTML="暂无项目";
+
+        return;
+
+    }
 
 
-    renderProjects(data);
+
+    showToday(data);
+
+
+    renderCards(data);
 
 
 })
 
 
-.catch(err=>{
+.catch(error=>{
 
 
     projectsBox.innerHTML=`
@@ -72,45 +88,30 @@ fetch(API_URL)
 
 
 
-// 更新顶部推荐
+// 首页推荐区域
 
 
-function updateRecommend(projects){
-
-
-
-    if(!projects || projects.length===0){
-
-        return;
-
-    }
+function showToday(data){
 
 
 
-    const project=projects[0];
-
-
-    const analysis =
-    project.analysis || {};
+    const item=data[0];
 
 
 
-
-    const title =
-    document.getElementById("hero-title");
+    const title=document.getElementById("hero-title");
 
 
-
-    const desc =
-    document.getElementById("hero-desc");
-
+    const desc=document.getElementById("hero-desc");
 
 
 
     if(title){
 
+
         title.innerHTML=
-        "🔥 "+text(project.name);
+        "🔥 "+safe(item.name);
+
 
     }
 
@@ -118,60 +119,31 @@ function updateRecommend(projects){
 
     if(desc){
 
-        desc.innerHTML=
-        text(
-        analysis["一句话介绍"]
-        );
 
-    }
+        let text="";
 
 
 
-    const info=document.querySelectorAll(".info-box div");
+        if(item.analysis){
 
 
+            text=
+            item.analysis["一句话介绍"]
+            ||
+            item.description
+            ||
+            "热门开源项目";
 
-    if(info.length>=3){
 
-
-        info[0].innerHTML=
-        `
-        领域
-        <br>
-        <span>
-        ${
-        list(
-        analysis["所属领域"]
-        ).join(" / ")
         }
-        </span>
-        `;
 
 
-
-        info[1].innerHTML=
-        `
-        热度
-        <br>
-        <span>
-        ⭐ ${text(project.stars)}
-        </span>
-        `;
-
-
-
-
-        info[2].innerHTML=
-        `
-        难度
-        <br>
-        <span>
-        新手友好
-        </span>
-        `;
+        desc.innerHTML=safe(text);
 
 
     }
+
+
 
 
 
@@ -184,10 +156,13 @@ function updateRecommend(projects){
 
 
 
-// 项目列表
 
 
-function renderProjects(projects){
+
+// 项目卡片
+
+
+function renderCards(data){
 
 
 
@@ -195,17 +170,31 @@ function renderProjects(projects){
 
 
 
-    projects.forEach(project=>{
+    data.forEach(item=>{
 
 
-        const a =
-        project.analysis || {};
+
+        const analysis=item.analysis || {};
 
 
 
         const card=document.createElement("div");
 
+
         card.className="card";
+
+
+
+        let fields=getArray(
+            analysis["所属领域"]
+        );
+
+
+
+        let play=getArray(
+            analysis["可以怎么玩"]
+        );
+
 
 
 
@@ -213,24 +202,27 @@ function renderProjects(projects){
 
         <h2>
 
-        🔥 ${text(project.name)}
+        🔥 ${safe(item.name)}
 
         </h2>
 
 
 
+
+
         <div class="tags">
+
 
         <span>
 
-        ⭐ ${text(project.stars)}
+        ⭐ ${safe(item.stars)}
 
         </span>
 
 
         <span>
 
-        💻 ${text(project.language)}
+        💻 ${safe(item.language)}
 
         </span>
 
@@ -242,51 +234,10 @@ function renderProjects(projects){
 
 
 
-        <h3>
-
-        🧠 这是一个什么项目？
-
-        </h3>
-
-
-
-        <p>
-
-        ${text(a["一句话介绍"])}
-
-        </p>
-
-
-
-
-
 
         <h3>
 
-        🌍 项目领域
-
-        </h3>
-
-
-
-        <p>
-
-        ${
-        list(
-        a["所属领域"]
-        ).join(" · ")
-        }
-
-        </p>
-
-
-
-
-
-
-        <h3>
-
-        🚀 可以怎么玩？
+        📌 项目是什么？
 
         </h3>
 
@@ -296,19 +247,87 @@ function renderProjects(projects){
 
 
         ${
-        list(
-        a["可以做什么"]
-        )
-
-        .map(x=>"✅ "+x)
-
-        .join("<br>")
+            safe(
+            analysis["一句话介绍"]
+            ||
+            item.description
+            )
 
         }
 
 
         </p>
 
+
+
+
+
+
+
+        <h3>
+
+        🌍 领域
+
+        </h3>
+
+
+
+        <p>
+
+
+        ${
+            fields.length
+
+            ?
+
+            fields.join(" · ")
+
+            :
+
+            "开源项目"
+
+        }
+
+
+        </p>
+
+
+
+
+
+
+
+        <h3>
+
+        🚀 怎么玩？
+
+        </h3>
+
+
+
+        <p>
+
+
+        ${
+            play.length
+
+            ?
+
+            play
+            .slice(0,3)
+            .map(
+            x=>"✅ "+x
+            )
+            .join("<br>")
+
+            :
+
+            "查看源码学习项目结构"
+
+        }
+
+
+        </p>
 
 
 
@@ -319,7 +338,7 @@ function renderProjects(projects){
 
         class="github-btn"
 
-        href="${project.url}"
+        href="${item.url}"
 
         target="_blank">
 
@@ -331,6 +350,7 @@ function renderProjects(projects){
 
 
         `;
+
 
 
 

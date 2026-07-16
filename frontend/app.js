@@ -371,3 +371,61 @@ target="_blank">
 
 
 });
+function renderProjects(projects){
+
+
+projectsBox.innerHTML="";
+
+
+
+projects.forEach(project=>{
+
+
+// 这里保留你现在的 card 创建代码
+
+
+});
+
+
+}
+
+
+
+
+function filterProjects(category){
+
+
+
+if(category==="all"){
+
+
+renderProjects(allProjects);
+
+
+return;
+
+
+}
+
+
+
+const result =
+allProjects.filter(project=>{
+
+
+const fields =
+project.analysis["所属领域"] || [];
+
+
+return fields.includes(category);
+
+
+});
+
+
+
+renderProjects(result);
+
+
+
+}

@@ -1,35 +1,31 @@
 const API_URL = "https://githubxuexi.onrender.com/projects";
 
 
-const projectsBox = document.getElementById("projects");
-
-
-let projectsData = [];
-
+const projectsBox =
+document.getElementById("projects");
 
 
 
+function text(v){
 
-function getText(value){
+    if(v === undefined || v === null || v === ""){
 
-    if(value === undefined || value === null || value === ""){
-
-        return "暂无介绍";
+        return "暂无";
 
     }
 
-    return value;
+    return v;
 
 }
 
 
 
+function list(v){
 
-function getArray(value){
-
-    return Array.isArray(value) ? value : [];
+    return Array.isArray(v) ? v : [];
 
 }
+
 
 
 
@@ -37,16 +33,14 @@ function getArray(value){
 
 fetch(API_URL)
 
+
 .then(res=>res.json())
 
 
 .then(data=>{
 
 
-    projectsData=data;
-
-
-    updateHero(data[0]);
+    updateRecommend(data);
 
 
     renderProjects(data);
@@ -81,10 +75,11 @@ fetch(API_URL)
 // 更新顶部推荐
 
 
-function updateHero(project){
+function updateRecommend(projects){
 
 
-    if(!project){
+
+    if(!projects || projects.length===0){
 
         return;
 
@@ -92,12 +87,18 @@ function updateHero(project){
 
 
 
-    const analysis = project.analysis || {};
+    const project=projects[0];
+
+
+    const analysis =
+    project.analysis || {};
+
 
 
 
     const title =
     document.getElementById("hero-title");
+
 
 
     const desc =
@@ -108,8 +109,8 @@ function updateHero(project){
 
     if(title){
 
-        title.innerHTML =
-        "🔥 " + getText(project.name);
+        title.innerHTML=
+        "🔥 "+text(project.name);
 
     }
 
@@ -117,8 +118,8 @@ function updateHero(project){
 
     if(desc){
 
-        desc.innerHTML =
-        getText(
+        desc.innerHTML=
+        text(
         analysis["一句话介绍"]
         );
 
@@ -126,7 +127,56 @@ function updateHero(project){
 
 
 
+    const info=document.querySelectorAll(".info-box div");
+
+
+
+    if(info.length>=3){
+
+
+        info[0].innerHTML=
+        `
+        领域
+        <br>
+        <span>
+        ${
+        list(
+        analysis["所属领域"]
+        ).join(" / ")
+        }
+        </span>
+        `;
+
+
+
+        info[1].innerHTML=
+        `
+        热度
+        <br>
+        <span>
+        ⭐ ${text(project.stars)}
+        </span>
+        `;
+
+
+
+
+        info[2].innerHTML=
+        `
+        难度
+        <br>
+        <span>
+        新手友好
+        </span>
+        `;
+
+
+    }
+
+
+
 }
+
 
 
 
@@ -148,13 +198,12 @@ function renderProjects(projects){
     projects.forEach(project=>{
 
 
-        const analysis =
+        const a =
         project.analysis || {};
 
 
 
         const card=document.createElement("div");
-
 
         card.className="card";
 
@@ -162,180 +211,126 @@ function renderProjects(projects){
 
         card.innerHTML=`
 
+        <h2>
 
+        🔥 ${text(project.name)}
 
+        </h2>
 
 
-<h2>
 
-🔥 ${getText(project.name)}
+        <div class="tags">
 
-</h2>
+        <span>
 
+        ⭐ ${text(project.stars)}
 
+        </span>
 
-<div class="tags">
 
+        <span>
 
-<span>
+        💻 ${text(project.language)}
 
-⭐ ${getText(project.stars)}
+        </span>
 
-</span>
 
+        </div>
 
-<span>
 
-💻 ${getText(project.language)}
 
-</span>
 
 
 
-</div>
+        <h3>
 
+        🧠 这是一个什么项目？
 
+        </h3>
 
 
 
+        <p>
 
-<h3>
+        ${text(a["一句话介绍"])}
 
-📖 项目是什么
+        </p>
 
-</h3>
 
 
 
-<p>
 
-${getText(
-analysis["一句话介绍"]
-)}
 
-</p>
+        <h3>
 
+        🌍 项目领域
 
+        </h3>
 
 
 
+        <p>
 
-<h3>
+        ${
+        list(
+        a["所属领域"]
+        ).join(" · ")
+        }
 
-🌍 项目领域
+        </p>
 
-</h3>
 
 
 
-<p>
 
-${
-getArray(
-analysis["所属领域"]
-)
-.join("  ·  ")
-}
 
-</p>
+        <h3>
 
+        🚀 可以怎么玩？
 
+        </h3>
 
 
 
+        <p>
 
-<h3>
 
-🚀 可以怎么玩
+        ${
+        list(
+        a["可以做什么"]
+        )
 
-</h3>
+        .map(x=>"✅ "+x)
 
+        .join("<br>")
 
-<p>
+        }
 
 
-${
-getArray(
-analysis["可以做什么"]
-)
+        </p>
 
-.map(
-item=>"✅ "+item
-)
 
-.join("<br>")
 
-}
 
 
 
-</p>
 
+        <a
 
+        class="github-btn"
 
+        href="${project.url}"
 
+        target="_blank">
 
 
+        查看源码 🚀
 
-<div class="info-box">
 
+        </a>
 
 
-<div>
-
-🔥 热度
-
-<br>
-
-${getText(project.stars)}
-
-</div>
-
-
-
-<div>
-
-📚 学习价值
-
-<br>
-
-${getText(
-analysis["学习价值"]
-)}
-
-</div>
-
-
-
-
-</div>
-
-
-
-
-
-
-
-<a
-
-class="github-btn"
-
-href="${project.url}"
-
-target="_blank">
-
-
-查看源码 🚀
-
-
-</a>
-
-
-
-
-
-
-`;
+        `;
 
 
 

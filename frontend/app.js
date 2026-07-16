@@ -1,28 +1,109 @@
-const API =
-"https://githubxuexi.onrender.com/projects";
+const API_URL = "https://githubxuexi.onrender.com/projects";
 
 
-fetch(API)
-
-.then(res => res.json())
-
-.then(data => {
+const projectsBox = document.getElementById("projects");
 
 
-    let html = "";
+
+// 安全读取
+function safeText(value, defaultText="暂无") {
+
+    if(value === undefined || value === null || value === ""){
+
+        return defaultText;
+
+    }
+
+    return value;
+
+}
 
 
-    data.forEach(project => {
+// 安全数组
+function safeArray(value){
+
+    if(Array.isArray(value)){
+
+        return value.join(" 、 ");
+
+    }
+
+    return "暂无";
+
+}
 
 
-        html += `
 
-<div class="card">
+// 加载项目
+
+fetch(API_URL)
+
+
+.then(response => {
+
+
+    if(!response.ok){
+
+        throw new Error("接口访问失败");
+
+    }
+
+
+    return response.json();
+
+
+})
+
+
+.then(projects => {
+
+
+    projectsBox.innerHTML = "";
+
+
+
+    projects.forEach(project => {
+
+
+
+        const analysis = project.analysis || {};
+
+        const guide = analysis["使用指南"] || {};
+
+
+
+
+        const card = document.createElement("div");
+
+
+        card.className = "card";
+
+
+
+        card.innerHTML = `
 
 
 <h2>
-🔥 ${project.name}
+🔥 ${safeText(project.name)}
 </h2>
+
+
+
+<p>
+⭐ Star：
+${safeText(project.stars)}
+</p>
+
+
+<p>
+💻 技术：
+${safeText(project.language)}
+</p>
+
+
+
+
+<hr>
 
 
 
@@ -30,11 +111,16 @@ fetch(API)
 🧠 一句话认识它
 </h3>
 
+
 <p>
 
-${project.analysis["一句话介绍"]}
+${safeText(
+analysis["一句话介绍"]
+)}
 
 </p>
+
+
 
 
 
@@ -45,9 +131,12 @@ ${project.analysis["一句话介绍"]}
 
 <p>
 
-${project.analysis["所属领域"] ? project.analysis["所属领域"].join(" 、 ") : "暂无"}
+${safeArray(
+analysis["所属领域"]
+)}
 
 </p>
+
 
 
 
@@ -59,11 +148,29 @@ ${project.analysis["所属领域"] ? project.analysis["所属领域"].join(" 、
 
 <p>
 
-${project.analysis["可以做什么"] ? project.analysis["可以做什么"].join("
-
-✅ ") : "暂无"}
+${safeArray(
+analysis["可以做什么"]
+)}
 
 </p>
+
+
+
+
+
+<h3>
+🔥 为什么值得玩？
+</h3>
+
+
+<p>
+
+${safeText(
+analysis["为什么值得玩"]
+)}
+
+</p>
+
 
 
 
@@ -75,9 +182,12 @@ ${project.analysis["可以做什么"] ? project.analysis["可以做什么"].join
 
 <p>
 
-${project.analysis["使用指南"] ? project.analysis["使用指南"]["普通用户"] : "暂无"}
+${safeText(
+guide["普通用户"]
+)}
 
 </p>
+
 
 
 
@@ -89,70 +199,133 @@ ${project.analysis["使用指南"] ? project.analysis["使用指南"]["普通用
 
 <p>
 
-${project.analysis["适合人群"] ? project.analysis["适合人群"].join(" 、 ") : "暂无"}
+${safeArray(
+analysis["适合人群"]
+)}
 
 </p>
+
 
 
 
 
 <h3>
-🔥 兴趣指数
-
+⭐ 兴趣指数
 </h3>
 
 
 <p>
 
-${project.analysis["兴趣指数"]}
+${safeText(
+analysis["兴趣指数"]
+)}
 
 </p>
+
 
 
 
 
 <h3>
 📚 学习价值
-
 </h3>
 
 
 <p>
 
-${project.analysis["学习价值"]}
+${safeText(
+analysis["学习价值"]
+)}
 
 </p>
 
 
 
+
+
+<h3>
+🛠 开发信息
+</h3>
+
+
+<p>
+
+💻 开发运行：
+
+${safeText(
+guide["开发者"]
+)}
+
+</p>
+
+
+<p>
+
+📦 EXE：
+
+${safeText(
+guide["EXE"]
+)}
+
+</p>
+
+
+<p>
+
+🌐 网页部署：
+
+${safeText(
+guide["网页"]
+)}
+
+</p>
+
+
+
+
+
 <a href="${project.url}" target="_blank">
 
-查看源码
+查看 GitHub 源码
 
 </a>
 
 
-
-</div>
-
-`;
+        `;
 
 
 
-    document.getElementById(
-        "projects"
-    ).innerHTML = html;
+        projectsBox.appendChild(card);
+
+
+
+    });
 
 
 
 })
 
 
-.catch(error=>{
 
-console.error(error);
+.catch(error => {
 
-document.getElementById("projects").innerHTML =
-"加载失败：" + error.message;
+
+    console.error(error);
+
+
+    projectsBox.innerHTML = `
+
+    <h3>
+    加载失败
+    </h3>
+
+
+    <p>
+    ${error.message}
+    </p>
+
+
+    `;
+
 
 });

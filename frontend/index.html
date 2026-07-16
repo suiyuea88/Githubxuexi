@@ -57,45 +57,48 @@ GitHub学习馆
 
 
 
+
 <nav>
 
 
-<span class="active">
+<a class="active" href="#home">
 
 首页
 
-</span>
+</a>
 
 
-<span>
+<a href="#ai">
 
 AI探索
 
-</span>
+</a>
 
 
-<span>
+<a href="#hot">
 
 热门项目
 
-</span>
+</a>
 
 
-<span>
+<a href="#learn">
 
 学习路线
 
-</span>
+</a>
 
 
-<span>
+<a href="#favorite">
 
 收藏
 
-</span>
+</a>
 
 
 </nav>
+
+
 
 
 
@@ -106,6 +109,7 @@ AI探索
 </div>
 
 
+
 </header>
 
 
@@ -114,7 +118,62 @@ AI探索
 
 
 
-<section class="recommend">
+
+<!-- 快速分类入口 -->
+
+
+<section class="quick-actions">
+
+
+<button onclick="filterCategory('AI')">
+
+🤖 AI项目
+
+</button>
+
+
+
+<button onclick="filterCategory('Python')">
+
+🐍 Python
+
+</button>
+
+
+
+<button onclick="filterCategory('Web')">
+
+🌐 Web
+
+</button>
+
+
+
+<button onclick="filterCategory('工具')">
+
+⚙️ 工具
+
+</button>
+
+
+
+<button onclick="showAll()">
+
+🔥 全部项目
+
+</button>
+
+
+</section>
+
+
+
+
+
+
+
+
+<section class="recommend" id="home">
 
 
 
@@ -127,7 +186,6 @@ AI探索
 今日推荐
 
 </div>
-
 
 
 
@@ -153,11 +211,15 @@ AI
 
 
 
+
 <div class="recommend-item">
+
 
 🔥 热门趋势
 
+
 <br>
+
 
 <span>
 
@@ -165,15 +227,21 @@ AI / 开源工具
 
 </span>
 
+
 </div>
+
+
 
 
 
 <div class="recommend-item">
 
+
 📚 学习难度
 
+
 <br>
+
 
 <span>
 
@@ -181,15 +249,20 @@ AI / 开源工具
 
 </span>
 
+
 </div>
+
 
 
 
 <div class="recommend-item">
 
+
 🎯 推荐指数
 
+
 <br>
+
 
 <span>
 
@@ -197,13 +270,12 @@ AI / 开源工具
 
 </span>
 
-</div>
-
-
-
 
 </div>
 
+
+
+</div>
 
 
 
@@ -214,7 +286,6 @@ AI / 开源工具
 <div class="recommend-right">
 
 
-
 <div class="small-title">
 
 今日发现
@@ -223,13 +294,11 @@ AI / 开源工具
 
 
 
-
 <h1 id="hero-title">
 
 探索开源世界
 
 </h1>
-
 
 
 
@@ -243,9 +312,7 @@ AI / 开源工具
 
 
 
-
 <div class="feature-box">
-
 
 
 <div>
@@ -264,7 +331,6 @@ AI
 
 
 
-
 <div>
 
 热度
@@ -278,7 +344,6 @@ AI
 </span>
 
 </div>
-
 
 
 
@@ -304,12 +369,12 @@ AI
 
 
 
-
-<button>
+<button onclick="scrollProjects()">
 
 开始探索
 
 </button>
+
 
 
 
@@ -325,6 +390,8 @@ AI
 
 
 
+
+
 <section id="projects">
 
 
@@ -332,6 +399,58 @@ AI
 
 
 </section>
+
+
+
+
+
+
+
+
+<section id="learn" class="hidden-section">
+
+
+<h2>
+
+📚 学习路线
+
+</h2>
+
+
+<p>
+
+后续开放：
+
+GitHub入门 → 项目运行 → 修改代码 → 部署上线
+
+</p>
+
+
+</section>
+
+
+
+
+
+<section id="favorite" class="hidden-section">
+
+
+<h2>
+
+⭐ 我的收藏
+
+</h2>
+
+
+<p>
+
+收藏功能即将上线
+
+</p>
+
+
+</section>
+
 
 
 

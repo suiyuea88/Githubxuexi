@@ -9,19 +9,11 @@ document.getElementById("detail");
 
 
 
-
 function text(v){
 
-if(!v){
-
-return "暂无";
+return v || "暂无";
 
 }
-
-return v;
-
-}
-
 
 
 
@@ -38,7 +30,6 @@ return Array.isArray(v)
 
 
 
-
 const params =
 new URLSearchParams(
 window.location.search
@@ -48,6 +39,8 @@ window.location.search
 
 const name =
 params.get("name");
+
+
 
 
 
@@ -72,9 +65,7 @@ item=>item.name===name
 if(!project){
 
 
-box.innerHTML=
-
-"没有找到这个项目";
+box.innerHTML="项目不存在";
 
 
 return;
@@ -84,8 +75,7 @@ return;
 
 
 
-
-show(project);
+render(project);
 
 
 
@@ -98,12 +88,13 @@ show(project);
 
 
 
-function show(project){
+function render(project){
 
 
 
 const a =
 project.analysis || {};
+
 
 
 
@@ -113,12 +104,14 @@ box.innerHTML=`
 
 
 
+<div class="detail-title">
+
+
 <h1>
 
 🔥 ${text(project.name)}
 
 </h1>
-
 
 
 <div class="tags">
@@ -141,13 +134,19 @@ box.innerHTML=`
 </div>
 
 
+</div>
 
 
+
+
+
+
+<section>
 
 
 <h2>
 
-🧠 这是一个什么项目？
+🧠 它是什么？
 
 </h2>
 
@@ -161,9 +160,16 @@ a["一句话介绍"]
 </p>
 
 
+</section>
 
 
 
+
+
+
+
+
+<section>
 
 
 <h2>
@@ -176,27 +182,31 @@ a["一句话介绍"]
 <p>
 
 ${
-
 arr(
 a["所属领域"]
 )
-
 .join(" · ")
-
 }
 
 </p>
 
 
+</section>
 
 
 
 
+
+
+
+
+
+<section>
 
 
 <h2>
 
-🚀 普通用户怎么玩？
+🎮 普通用户怎么玩？
 
 </h2>
 
@@ -205,7 +215,6 @@ a["所属领域"]
 
 
 ${
-
 arr(
 a["可以做什么"]
 )
@@ -222,10 +231,60 @@ x=>"✅ "+x
 </p>
 
 
+</section>
 
 
 
 
+
+
+
+
+
+<section>
+
+
+<h2>
+
+👨‍💻 开发者怎么玩？
+
+</h2>
+
+
+
+<p>
+
+推荐：
+
+<br>
+
+1. 查看源码结构
+
+<br>
+
+2. 本地运行项目
+
+<br>
+
+3. 修改功能
+
+<br>
+
+4. 二次开发
+
+
+</p>
+
+
+</section>
+
+
+
+
+
+
+
+<section>
 
 
 <h2>
@@ -233,7 +292,6 @@ x=>"✅ "+x
 📚 学习价值
 
 </h2>
-
 
 
 <p>
@@ -245,15 +303,18 @@ a["学习价值"]
 </p>
 
 
+</section>
 
 
 
 
+
+
+
+<div class="detail-buttons">
 
 
 <a
-
-class="source-btn"
 
 href="${project.url}"
 
@@ -264,6 +325,19 @@ target="_blank">
 
 
 </a>
+
+
+
+<button>
+
+
+⭐ 收藏项目
+
+
+</button>
+
+
+</div>
 
 
 

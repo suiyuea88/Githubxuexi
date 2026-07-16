@@ -45,6 +45,7 @@ def get_hot_projects() -> list[dict]:
         }
         result.append({
             "name": repo.get("name"),
+            "full_name": repo.get("full_name"),
             "author": repo.get("owner", {}).get("login"),
             "stars": repo.get("stargazers_count", 0),
             "language": repo.get("language") or "多语言",

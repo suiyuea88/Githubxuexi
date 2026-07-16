@@ -53,7 +53,7 @@
 
   function normalize(repo) {
     return {
-      name: repo.name, author: repo.owner?.login || "未知作者", stars: repo.stargazers_count || 0,
+      name: repo.name, full_name: repo.full_name || `${repo.owner?.login || ""}/${repo.name || ""}`, author: repo.owner?.login || "未知作者", stars: repo.stargazers_count || 0,
       language: repo.language || "多语言", url: repo.html_url, homepage: repo.homepage || "",
       updated_at: repo.updated_at, analysis: analyze(repo),
     };

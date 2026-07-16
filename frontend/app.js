@@ -23,11 +23,14 @@ function renderProjects(data){
     <div class="scroll-content"><div class="project-title"><div><small>${safe(fields[0],"开源项目")}</small><h3>${safe(project.name)}</h3></div><span>⭐ ${safe(project.stars,"0")}</span></div>
       <p>${safe(a["一句话介绍"],"进入项目详情，了解它能做什么。")}</p>
       <div class="project-tags">${fields.slice(0,3).map(x=>`<span>${safe(x)}</span>`).join("")}</div>
-      <div class="study-actions"><button class="lab-open" data-name="${safe(project.name)}" onclick="openLabByButton(this)">研习台</button><a href="detail.html?name=${encodeURIComponent(project.name||"")}">详解</a><a href="${safeUrl(project.url)}" target="_blank" rel="noopener noreferrer">源码</a><button class="favorite ${isFav?"saved":""}" data-project="${safe(project.name)}" onclick="favoriteProject(this)">${isFav?"已藏":"收藏"}</button></div>
+      <div class="study-actions"><button class="lab-open" data-name="${safe(project.name)}" onclick="openLabByButton(this)">${canRunInBrowser(project)?"浏览器运行":"学习指南"}</button><a href="detail.html?name=${encodeURIComponent(project.name||"")}">详解</a><a href="${safeUrl(project.url)}" target="_blank" rel="noopener noreferrer">源码</a><button class="favorite ${isFav?"saved":""}" data-project="${safe(project.name)}" onclick="favoriteProject(this)">${isFav?"已藏":"收藏"}</button></div>
     </div>`;projectsBox.appendChild(card);});
 }
 
 function findProject(name){return allProjects.find(p=>p.name===name)}
+function repositorySlug(project){if(project.full_name&&project.full_name.includes("/"))return project.full_name;const match=String(project.url||"").match(/github\.com\/([^/]+\/[^/#?]+)/i);return match?match[1].replace(/\.git$/i,""):""}
+function canRunInBrowser(project){const language=String(project.language||"").toLowerCase(),fields=arr(project.analysis?.["所属领域"]).join(" ").toLowerCase();return ["javascript","typescript","html","css","vue","svelte"].includes(language)||fields.includes("web")}
+function stackBlitzUrl(project){const slug=repositorySlug(project);return slug?`https://stackblitz.com/github/${encodeURI(slug)}?embed=1&hideNavigation=1&view=preview`:""}
 function filterCategory(type){const key=type.toLowerCase(),aliases={ai:["人工智能","ai"],工具:["开发工具","工具"],web:["web"],python:["python"]},words=aliases[key]||[key],data=allProjects.filter(p=>arr(p.analysis?.["所属领域"]).some(f=>words.some(w=>String(f).toLowerCase().includes(w))));renderProjects(data);setCollectionNote(`${type} 方向 · 共 ${data.length} 个项目`);scrollProjects();}
 function showAll(){renderProjects(allProjects);setCollectionNote("先看懂，再运行，最后尝试改动一个小功能。");scrollProjects();}
 function showFavorites(){const fav=getFavorites(),data=allProjects.filter(p=>fav.includes(p.name));renderProjects(data);setCollectionNote(`我的收藏 · ${data.length} 个待研习项目`);scrollProjects();}
@@ -45,8 +48,10 @@ function switchLabTab(button){activeLabTab=button.dataset.tab;document.querySele
 function renderLab(){
   const p=activeProject,a=p.analysis||{},guide=a["使用指南"]||{},body=document.getElementById("lab-body");
   if(activeLabTab==="preview"){
-    if(p.homepage){body.innerHTML=`<div class="preview-notice"><b>在线演示</b><span>部分网站禁止被嵌入；如果下方空白，请点击“新窗口打开”。</span><a href="${safeUrl(p.homepage)}" target="_blank" rel="noopener noreferrer">新窗口打开</a></div><iframe class="project-frame" src="${safeUrl(p.homepage)}" title="${safe(p.name)} 在线演示" sandbox="allow-forms allow-scripts allow-same-origin allow-popups"></iframe>`;}
-    else{body.innerHTML=`<div class="no-preview"><span>习</span><h3>这个项目没有提供可嵌入的在线演示</h3><p>它可能需要 Python、Node.js、桌面环境或 API 密钥。网页不能安全地直接运行任意 GitHub 源码，但可以在“运行指南”中一步步完成本地体验。</p><button onclick="document.querySelector('[data-tab=guide]').click()">查看运行指南</button><a href="${safeUrl(p.url)}" target="_blank" rel="noopener noreferrer">打开源码仓库</a></div>`;}
+    const runner=canRunInBrowser(p)?stackBlitzUrl(p):"";
+    if(runner){body.innerHTML=`<div class="preview-notice"><b>临时浏览器运行</b><span>由 StackBlitz 临时导入公开仓库，不占用本站 Render 运行时间；关闭研习台即销毁。</span><a href="${safeUrl(runner.split("?")[0])}" target="_blank" rel="noopener noreferrer">新窗口运行</a></div><iframe class="project-frame" src="${safeUrl(runner)}" title="${safe(p.name)} 浏览器运行" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals allow-downloads"></iframe>`;}
+    else if(p.homepage){body.innerHTML=`<div class="preview-notice"><b>官网效果预览</b><span>这是作者已部署的效果，不是在本站运行源码。部分网站会禁止嵌入。</span><a href="${safeUrl(p.homepage)}" target="_blank" rel="noopener noreferrer">新窗口查看</a></div><iframe class="project-frame" src="${safeUrl(p.homepage)}" title="${safe(p.name)} 效果预览" sandbox="allow-forms allow-scripts allow-same-origin allow-popups"></iframe>`;}
+    else{body.innerHTML=`<div class="no-preview"><span>习</span><h3>这类项目不能在普通网页中运行</h3><p>${safe(p.language,"该项目")}可能需要后端、桌面系统、数据库或 API 密钥。为了安全和避免消耗 Render 资源，本站不会伪装成已经运行。</p><button onclick="document.querySelector('[data-tab=guide]').click()">查看学习指南</button><a href="${safeUrl(p.url)}" target="_blank" rel="noopener noreferrer">打开源码仓库</a></div>`;}
   }else if(activeLabTab==="guide"){
     const rows=[["第一步 · 准备环境",guide["安装方法"]],["第二步 · 启动项目",guide["运行方法"]],["第三步 · 尝试部署",guide["网页部署"]],["进阶 · 二次开发",guide["二次开发难度"]]];
     body.innerHTML=`<div class="guide-workbench">${rows.map((r,i)=>`<article><input type="checkbox" id="task-${i}"><label for="task-${i}"><small>${r[0]}</small><b>${safe(r[1],"请进入 README 查看作者说明")}</b></label></article>`).join("")}<div class="lab-links"><a href="${safeUrl(p.url)}" target="_blank" rel="noopener noreferrer">打开 README / 源码</a>${p.homepage?`<a href="${safeUrl(p.homepage)}" target="_blank" rel="noopener noreferrer">打开项目官网</a>`:""}</div></div>`;

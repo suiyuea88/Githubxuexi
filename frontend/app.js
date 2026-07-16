@@ -4,17 +4,12 @@ const API_URL = "https://githubxuexi.onrender.com/projects";
 const projectsBox = document.getElementById("projects");
 
 
-let allProjects = [];
 
-
-
-// 安全文字
-
-function safeText(value){
+function text(value){
 
     if(value === undefined || value === null || value === ""){
 
-        return "暂无";
+        return "暂无介绍";
 
     }
 
@@ -24,9 +19,7 @@ function safeText(value){
 
 
 
-// 安全数组
-
-function safeArray(value){
+function array(value){
 
     if(Array.isArray(value)){
 
@@ -41,53 +34,52 @@ function safeArray(value){
 
 
 
-// 加载项目
-
 
 fetch(API_URL)
 
 
-.then(res => {
+.then(response=>{
 
 
-    if(!res.ok){
+    if(!response.ok){
 
-        throw new Error("接口错误");
+        throw new Error("接口连接失败");
 
     }
 
 
-    return res.json();
+    return response.json();
 
 
 })
 
 
-.then(data=>{
+.then(projects=>{
 
 
-    allProjects = data;
-
-
-    renderProjects(allProjects);
+    render(projects);
 
 
 })
 
 
-.catch(err=>{
 
-
-    console.error(err);
+.catch(error=>{
 
 
     projectsBox.innerHTML = `
 
-    <div class="error">
 
-    加载失败：${err.message}
+    <div class="card">
+
+
+    加载失败：
+
+    ${error.message}
+
 
     </div>
+
 
     `;
 
@@ -99,37 +91,20 @@ fetch(API_URL)
 
 
 
-// 渲染项目
+
+function render(projects){
 
 
-function renderProjects(projects){
-
-
-    projectsBox.innerHTML = "";
-
-
-
-    if(projects.length===0){
-
-
-        projectsBox.innerHTML =
-        "<p>暂无项目</p>";
-
-
-        return;
-
-
-    }
-
+    projectsBox.innerHTML="";
 
 
 
     projects.forEach(project=>{
 
 
-        const analysis = project.analysis || {};
+        const a = project.analysis || {};
 
-        const guide = analysis["使用指南"] || {};
+        const guide = a["使用指南"] || {};
 
 
 
@@ -144,208 +119,246 @@ function renderProjects(projects){
 
 
 
-        <div class="project-title">
 
+<h2>
 
-        <h2>
-        🔥 ${safeText(project.name)}
-        </h2>
+🔥 ${text(project.name)}
 
+</h2>
 
-        <div class="tags">
 
 
-        <span>
-        ⭐ ${safeText(project.stars)}
-        </span>
 
 
-        <span>
-        💻 ${safeText(project.language)}
-        </span>
+<div class="tags">
 
 
-        </div>
+<span>
 
+⭐ ${text(project.stars)}
 
-        </div>
+</span>
 
 
+<span>
 
+💻 ${text(project.language)}
 
+</span>
 
-        <h3>
-        🧠 一句话认识
-        </h3>
 
+</div>
 
-        <p>
 
-        ${safeText(
-        analysis["一句话介绍"]
-        )}
 
-        </p>
 
 
 
 
+<h3>
 
+🧠 这个项目是什么？
 
-        <h3>
-        🌍 所属领域
-        </h3>
+</h3>
 
 
-        <div class="tags">
 
+<p>
 
-        ${
-            safeArray(
-            analysis["所属领域"]
-            )
-            .map(
-            item=>`
-            <span class="tag">
-            ${item}
-            </span>
-            `
-            )
-            .join("")
-        }
+${text(a["一句话介绍"])}
 
+</p>
 
-        </div>
 
 
 
 
 
 
-        <h3>
-        🚀 它能做什么
-        </h3>
 
+<h3>
 
-        <ul>
+🌍 它属于什么领域？
 
+</h3>
 
-        ${
-            safeArray(
-            analysis["可以做什么"]
-            )
-            .map(
-            item=>`
-            <li>${item}</li>
-            `
-            )
-            .join("")
-        }
 
 
-        </ul>
+<div class="tags">
 
 
+${
 
+array(a["所属领域"])
 
+.map(item=>`
 
+<span>
 
+${item}
 
-        <div class="score-box">
+</span>
 
+`)
 
-        <div>
+.join("")
 
-        🔥 兴趣指数
+}
 
-        <br>
 
-        ${safeText(
-        analysis["兴趣指数"]
-        )}
 
-        </div>
+</div>
 
 
 
-        <div>
 
-        📚 学习价值
 
-        <br>
 
-        ${safeText(
-        analysis["学习价值"]
-        )}
 
-        </div>
+<h3>
 
+🚀 它可以做什么？
 
-        </div>
+</h3>
 
 
 
+<p>
 
 
+${
 
+array(a["可以做什么"])
 
-        <h3>
-        🎮 新手怎么玩
-        </h3>
+.map(item=>`
 
+<br>
 
-        <p>
+✅ ${item}
 
-        ${safeText(
-        guide["普通用户"]
-        )}
+`)
 
-        </p>
+.join("")
 
+}
 
 
+</p>
 
 
 
-        <h3>
-        👨‍🎓 适合谁
-        </h3>
 
 
-        <p>
 
 
-        ${
-        safeArray(
-        analysis["适合人群"]
-        )
-        .join(" 、 ")
-        }
+<div class="score-box">
 
 
-        </p>
 
+<div>
 
 
+🔥 兴趣指数
 
 
+<br>
 
 
-        <a class="github-btn"
+${text(a["兴趣指数"])}
 
-        href="${project.url}"
 
-        target="_blank">
+</div>
 
 
-        查看源码 🚀
 
 
-        </a>
+<div>
 
 
+📚 学习价值
 
-        `;
+
+<br>
+
+
+${text(a["学习价值"])}
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<h3>
+
+🎮 新手体验方式
+
+</h3>
+
+
+
+<p>
+
+${text(guide["普通用户"])}
+
+</p>
+
+
+
+
+
+
+
+<h3>
+
+👨‍🎓 适合哪些人？
+
+</h3>
+
+
+
+<p>
+
+
+${
+
+array(a["适合人群"])
+
+.join(" 、 ")
+
+}
+
+
+</p>
+
+
+
+
+
+
+<a class="github-btn"
+
+href="${project.url}"
+
+target="_blank">
+
+
+查看源码 🚀
+
+
+</a>
+
+
+
+
+`;
 
 
 
@@ -354,56 +367,6 @@ function renderProjects(projects){
 
 
     });
-
-
-}
-
-
-
-
-
-
-
-
-// 分类筛选
-
-
-function filterProjects(category){
-
-
-
-    if(category==="all"){
-
-
-        renderProjects(allProjects);
-
-
-        return;
-
-
-    }
-
-
-
-
-    const result =
-    allProjects.filter(project=>{
-
-
-        const fields =
-        project.analysis?.["所属领域"] || [];
-
-
-
-        return fields.includes(category);
-
-
-
-    });
-
-
-
-    renderProjects(result);
 
 
 

@@ -520,6 +520,59 @@ color:white;
 
 }
 
+.card-buttons button.saved{
+background:#7b6a53;
+}
+
+.state-card{
+grid-column:1/-1;
+background:rgba(255,253,248,.96);
+border:1px solid #eadfce;
+border-radius:18px;
+padding:45px;
+text-align:center;
+color:#62574d;
+}
+
+.state-card b{display:block;font-size:22px;color:#9f3d35;margin-bottom:8px}
+.state-card p{height:auto;margin:8px 0;overflow:visible}
+.state-card button{border:0;background:#9f3d35;color:white;padding:11px 24px;border-radius:8px;cursor:pointer;margin-top:10px}
+.state-card a{color:#9f3d35}
+
+/* 项目详情：沿用首页颜色与卡片语言，不改变首页布局 */
+.detail-container{max-width:1120px;margin:42px auto 80px;padding:0 20px}
+.detail-card{background:rgba(255,253,248,.97);border:1px solid #eadfce;border-radius:22px;box-shadow:0 20px 55px rgba(70,40,20,.11);overflow:hidden}
+.detail-title{padding:38px 46px;background:linear-gradient(120deg,#9f3d35,#7d302a);color:white;display:flex;align-items:flex-end;justify-content:space-between;gap:28px}
+.detail-title small{font-size:12px;letter-spacing:.22em;color:#eed6c8}
+.detail-title h1{font-size:38px;margin:8px 0 0;font-weight:600}
+.detail-title .tags{min-height:0;text-align:right}
+.detail-title .tags span{background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.2)}
+.detail-card>section{padding:30px 46px;border-bottom:1px solid #eadfce}
+.detail-card section h2{font-size:20px;margin:0 0 14px;color:#43372f}
+.detail-card section p,.detail-card li{font-size:14px;line-height:1.9;color:#66594e}
+.detail-card ul{margin:0;padding-left:22px}
+.detail-tags{display:flex;flex-wrap:wrap;gap:8px}
+.detail-tags span{padding:7px 14px;border-radius:20px;background:#eee1cc;color:#745f4d;font-size:13px}
+.detail-columns{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #eadfce}
+.detail-columns section{padding:30px 46px}
+.detail-columns section:first-child{border-right:1px solid #eadfce}
+.guide-section{background:#f6efe2}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}
+.section-head small{color:#9f3d35;letter-spacing:.18em;font-size:11px}
+.section-head h2{margin:5px 0 0!important}
+.section-head>span{background:#332b26;color:white;padding:8px 14px;border-radius:18px;font-size:12px}
+.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.guide-grid article{background:#fffdf8;border:1px solid #e7d9c5;border-radius:12px;padding:18px}
+.guide-grid b{display:flex;align-items:center;gap:9px;color:#9f3d35;font-size:15px}
+.guide-grid b i{font-style:normal;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#9f3d35;color:white;font-size:10px}
+.guide-grid p{font-size:13px!important;line-height:1.75!important;margin:10px 0 0}
+.value-section>div{display:flex;gap:12px;margin-top:18px}
+.value-section>div span{padding:10px 14px;background:#eee1cc;border-radius:10px;font-size:12px;color:#66594e}
+.value-section>div b{display:block;margin-top:5px;color:#9f3d35}
+.detail-buttons{display:flex;justify-content:flex-end;gap:12px;padding:26px 46px}
+.detail-buttons a{min-width:170px;height:46px;display:flex;align-items:center;justify-content:center;text-decoration:none;border-radius:9px;background:#332b26;color:white;font-size:14px}
+.detail-buttons a.primary-link{background:#9f3d35}
+
 
 
 
@@ -574,6 +627,19 @@ grid-template-columns:1fr;
 margin:20px;
 
 }
+
+.detail-container{margin-top:20px;padding:0 14px}
+.detail-title{padding:28px 22px;display:block}
+.detail-title h1{font-size:29px}
+.detail-title .tags{text-align:left;margin-top:18px}
+.detail-card>section,.detail-columns section{padding:24px 22px}
+.detail-columns{grid-template-columns:1fr}
+.detail-columns section:first-child{border-right:0;border-bottom:1px solid #eadfce}
+.guide-grid{grid-template-columns:1fr}
+.section-head{align-items:flex-start}
+.value-section>div{display:grid;grid-template-columns:1fr 1fr}
+.detail-buttons{padding:22px;display:grid;grid-template-columns:1fr}
+.detail-buttons a{width:100%}
 
 
 }

@@ -1,530 +1,104 @@
-const API_URL =
-"https://githubxuexi.onrender.com/projects";
-
-
-const projectsBox =
-document.getElementById("projects");
-
-
+const API_URL = "/projects";
+const projectsBox = document.getElementById("projects");
 let allProjects = [];
 
-
-
-
-// 安全处理
-
-function safe(v){
-
-    return v || "暂无";
-
+function safe(value, fallback = "暂无") {
+  const text = value === null || value === undefined || value === "" ? fallback : String(value);
+  return text.replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[char]);
 }
 
-
-
-function arr(v){
-
-    return Array.isArray(v)
-    ? v
-    : [];
-
+function arr(value) {
+  return Array.isArray(value) ? value : [];
 }
 
+function getFavorites() {
+  try { return JSON.parse(localStorage.getItem("favorites") || "[]"); }
+  catch { return []; }
+}
 
-
-
-
-
-
-// 获取数据
-
-
-fetch(API_URL)
-
-.then(res=>res.json())
-
-.then(data=>{
-
-
-    allProjects=data;
-
-
+async function loadProjects() {
+  projectsBox.innerHTML = '<div class="state-card"><b>正在加载今日热门项目…</b><p>Render 免费服务首次打开可能需要等待几十秒。</p></div>';
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 25000);
+    const response = await fetch(API_URL, { signal: controller.signal });
+    clearTimeout(timer);
+    if (!response.ok) throw new Error(`接口状态 ${response.status}`);
+    const payload = await response.json();
+    const data = Array.isArray(payload) ? payload : arr(payload.projects);
+    if (!data.length) throw new Error(payload.error || "暂时没有获取到项目");
+    allProjects = data;
     renderProjects(data);
-
-
     updateRecommend(data[0]);
-
-
-})
-
-.catch(()=>{
-
-
-projectsBox.innerHTML=
-
-`
-<div class="card">
-
-加载失败，请检查接口
-
-</div>
-`;
-
-});
-
-
-
-
-
-
-
-
-
-// 推荐
-
-
-function updateRecommend(project){
-
-
-if(!project){
-
-return;
-
+  } catch (error) {
+    projectsBox.innerHTML = `<div class="state-card error"><b>项目加载失败</b><p>${safe(error.message, "请稍后重试")}</p><button onclick="loadProjects()">重新加载</button></div>`;
+  }
 }
 
-
-let a =
-project.analysis || {};
-
-
-
-let title =
-document.getElementById("hero-title");
-
-let desc =
-document.getElementById("hero-desc");
-
-
-
-if(title){
-
-title.innerHTML=
-
-"🔥 "+safe(project.name);
-
+function updateRecommend(project) {
+  if (!project) return;
+  const analysis = project.analysis || {};
+  document.getElementById("hero-title").textContent = `🔥 ${project.name || "今日推荐"}`;
+  document.getElementById("hero-desc").textContent = analysis["一句话介绍"] || "发现值得学习的开源项目";
 }
 
-
-
-if(desc){
-
-desc.innerHTML=
-
-safe(
-a["一句话介绍"]
-);
-
+function renderProjects(data) {
+  projectsBox.innerHTML = "";
+  if (!data.length) {
+    projectsBox.innerHTML = '<div class="state-card"><b>这个分类暂时没有项目</b><p>可以选择“全部”查看今日列表。</p></div>';
+    return;
+  }
+  const favorites = getFavorites();
+  data.forEach(project => {
+    const analysis = project.analysis || {};
+    const fields = arr(analysis["所属领域"]);
+    const play = arr(analysis["可以做什么"]);
+    const isFavorite = favorites.includes(project.name);
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <h2>🔥 ${safe(project.name)}</h2>
+      <div class="tags">
+        <span>⭐ ${safe(project.stars, "0")}</span><span>💻 ${safe(project.language)}</span>
+        ${fields.slice(0, 2).map(item => `<span>${safe(item)}</span>`).join("")}
+      </div>
+      <h3>🧠 项目是什么？</h3><p>${safe(analysis["一句话介绍"])}</p>
+      <h3>🚀 怎么玩？</h3><p>${play.slice(0, 2).map(item => `✅ ${safe(item)}`).join("<br>") || "进入详情查看完整使用指南"}</p>
+      <div class="card-buttons">
+        <a href="detail.html?name=${encodeURIComponent(project.name || "")}">📖 详情</a>
+        <a href="${safe(project.url, "#")}" target="_blank" rel="noopener noreferrer">🚀 源码</a>
+        <button class="${isFavorite ? "saved" : ""}" data-project="${safe(project.name)}" onclick="favoriteProject(this)">${isFavorite ? "✓ 已收藏" : "⭐ 收藏"}</button>
+      </div>`;
+    projectsBox.appendChild(card);
+  });
 }
 
-
+function filterCategory(type) {
+  const keyword = type.toLowerCase();
+  const aliases = { "ai": ["人工智能", "ai"], "工具": ["开发工具", "工具"], "创意": ["创意", "开源项目"] };
+  const words = aliases[keyword] || [keyword];
+  const result = allProjects.filter(project => arr(project.analysis?.["所属领域"]).some(field => words.some(word => String(field).toLowerCase().includes(word))));
+  renderProjects(result);
+  document.getElementById("projects").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-
-
-
-
-
-
-
-
-// 项目列表
-
-
-function renderProjects(data){
-
-
-
-projectsBox.innerHTML="";
-
-
-
-
-data.forEach(project=>{
-
-
-let a =
-project.analysis || {};
-
-
-
-let fields =
-arr(
-a["所属领域"]
-);
-
-
-
-
-let play =
-arr(
-a["可以做什么"]
-);
-
-
-
-
-
-let card =
-document.createElement("div");
-
-
-
-card.className="card";
-
-
-
-
-card.innerHTML=`
-
-<h2>
-
-🔥 ${safe(project.name)}
-
-</h2>
-
-
-
-<div class="tags">
-
-
-<span>
-
-⭐ ${safe(project.stars)}
-
-</span>
-
-
-<span>
-
-💻 ${safe(project.language)}
-
-</span>
-
-
-
-${
-
-fields.slice(0,2)
-
-.map(
-
-x=>`
-
-<span>
-
-${x}
-
-</span>
-
-`
-
-)
-
-.join("")
-
+function showAll() { renderProjects(allProjects); }
+function scrollProjects() { document.getElementById("projects").scrollIntoView({ behavior: "smooth" }); }
+
+function favoriteProject(button) {
+  const name = button.dataset.project;
+  const favorites = getFavorites();
+  const index = favorites.indexOf(name);
+  if (index >= 0) {
+    favorites.splice(index, 1);
+    button.textContent = "⭐ 收藏";
+    button.classList.remove("saved");
+  } else {
+    favorites.push(name);
+    button.textContent = "✓ 已收藏";
+    button.classList.add("saved");
+  }
+  localStorage.setItem("favorites", JSON.stringify(favorites));
 }
 
-
-
-</div>
-
-
-
-
-
-<h3>
-
-🧠 项目是什么？
-
-</h3>
-
-
-<p>
-
-${safe(
-a["一句话介绍"]
-)}
-
-</p>
-
-
-
-
-
-
-
-<h3>
-
-🚀 怎么玩？
-
-</h3>
-
-
-<p>
-
-${
-
-play.slice(0,2)
-
-.map(
-
-x=>"✅ "+x
-
-)
-
-.join("<br>")
-
-}
-
-
-</p>
-
-
-
-
-
-
-
-<div class="card-buttons">
-
-
-<a
-
-href="detail.html?name=${encodeURIComponent(project.name)}"
-
->
-
-📖 详情
-
-</a>
-
-
-
-
-<a
-
-href="${project.url}"
-
-target="_blank"
-
->
-
-🚀 源码
-
-</a>
-
-
-
-
-<button
-
-onclick="favoriteProject('${project.name}')"
-
->
-
-⭐ 收藏
-
-</button>
-
-
-
-</div>
-
-
-
-`;
-
-
-
-
-projectsBox.appendChild(card);
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// 分类
-
-
-function filterCategory(type){
-
-
-
-let result =
-
-
-allProjects.filter(project=>{
-
-
-let fields =
-
-arr(
-
-project.analysis?.["所属领域"]
-
-);
-
-
-
-return fields.some(x=>{
-
-
-return x
-.toLowerCase()
-.includes(
-type.toLowerCase()
-);
-
-
-});
-
-
-
-});
-
-
-
-renderProjects(result);
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// 全部
-
-
-function showAll(){
-
-
-renderProjects(allProjects);
-
-
-}
-
-
-
-
-
-
-
-
-
-// 滚动
-
-
-function scrollProjects(){
-
-
-document
-
-.getElementById("projects")
-
-.scrollIntoView({
-
-behavior:"smooth"
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-
-// 收藏
-
-
-function favoriteProject(name){
-
-
-
-let favorites =
-
-JSON.parse(
-
-localStorage.getItem("favorites")
-
-||"[]"
-
-);
-
-
-
-
-if(
-favorites.includes(name)
-
-){
-
-
-alert(
-
-"已经收藏"
-
-);
-
-
-return;
-
-
-}
-
-
-
-
-favorites.push(name);
-
-
-
-localStorage.setItem(
-
-"favorites",
-
-JSON.stringify(favorites)
-
-);
-
-
-
-alert(
-
-"收藏成功 ⭐"
-
-);
-
-
-}
+loadProjects();

@@ -1,7 +1,11 @@
 const API_URL = "https://githubxuexi.onrender.com/projects";
 
 
-const projectsBox = document.getElementById("projects");
+const projectsBox =
+document.getElementById("projects");
+
+
+let allProjects = [];
 
 
 
@@ -12,9 +16,7 @@ function safe(value){
 
     if(value === undefined || value === null || value === ""){
 
-
         return "暂无";
-
 
     }
 
@@ -28,20 +30,12 @@ function safe(value){
 
 
 
-function arr(value){
+function array(value){
 
 
-    if(Array.isArray(value)){
-
-
-        return value;
-
-
-    }
-
-
-    return [];
-
+    return Array.isArray(value)
+    ? value
+    : [];
 
 }
 
@@ -50,6 +44,7 @@ function arr(value){
 
 
 
+// 获取项目
 
 
 fetch(API_URL)
@@ -61,39 +56,27 @@ fetch(API_URL)
 .then(data=>{
 
 
-    if(!data || data.length===0){
-
-
-        projectsBox.innerHTML="暂无项目";
-
-
-        return;
-
-
-    }
-
+    allProjects = data;
 
 
     updateRecommend(data[0]);
 
 
-
     renderProjects(data);
-
 
 
 })
 
 
 
-.catch(err=>{
+.catch(error=>{
 
 
     projectsBox.innerHTML=`
 
     <div class="card">
 
-    加载失败
+    数据加载失败
 
     </div>
 
@@ -110,15 +93,25 @@ fetch(API_URL)
 
 
 
-// 更新首页推荐
+
+// 首页推荐
 
 
 function updateRecommend(project){
 
 
 
+    if(!project){
+
+        return;
+
+    }
+
+
+
     const analysis =
     project.analysis || {};
+
 
 
 
@@ -132,10 +125,11 @@ function updateRecommend(project){
 
 
 
+
     if(title){
 
 
-        title.innerHTML=
+        title.innerHTML =
         "🔥 "+safe(project.name);
 
 
@@ -147,7 +141,7 @@ function updateRecommend(project){
     if(desc){
 
 
-        desc.innerHTML=
+        desc.innerHTML =
         safe(
         analysis["一句话介绍"]
         );
@@ -167,14 +161,40 @@ function updateRecommend(project){
 
 
 
-// 项目卡片
+
+
+// 渲染项目
 
 
 function renderProjects(data){
 
 
-
     projectsBox.innerHTML="";
+
+
+
+    if(data.length===0){
+
+
+        projectsBox.innerHTML=
+
+        `
+
+        <div class="card">
+
+        暂无符合项目
+
+        </div>
+
+        `;
+
+
+        return;
+
+
+    }
+
+
 
 
 
@@ -187,6 +207,22 @@ function renderProjects(data){
 
 
 
+        const fields =
+        array(
+        analysis["所属领域"]
+        );
+
+
+
+        const play =
+        array(
+        analysis["可以做什么"]
+        );
+
+
+
+
+
         const card=document.createElement("div");
 
 
@@ -194,197 +230,149 @@ function renderProjects(data){
 
 
 
-        const fields =
-        arr(
-        analysis["所属领域"]
-        );
-
-
-
-        const things =
-        arr(
-        analysis["可以做什么"]
-        );
-
-
-
-        const people =
-        arr(
-        analysis["适合人群"]
-        );
-
-
-
-
-
-
         card.innerHTML=`
 
+        <h2>
 
+        🔥 ${safe(project.name)}
 
-<h2>
+        </h2>
 
-🔥 ${safe(project.name)}
 
-</h2>
 
 
+        <div class="tags">
 
 
+        <span>
 
-<div class="tags">
+        ⭐ ${safe(project.stars)}
 
+        </span>
 
-<span>
 
-⭐ ${safe(project.stars)}
+        <span>
 
-</span>
+        💻 ${safe(project.language)}
 
+        </span>
 
 
-<span>
 
-💻 ${safe(project.language)}
+        ${
+        fields
+        .slice(0,3)
+        .map(
+        item=>`
 
-</span>
+        <span>
 
+        ${item}
 
+        </span>
 
+        `
+        )
+        .join("")
+        }
 
-${
-fields.slice(0,2)
-.map(
-x=>`
 
-<span>${x}</span>
+        </div>
 
-`
-)
-.join("")
-}
 
 
-</div>
 
 
 
+        <h3>
 
+        🧠 项目是什么？
 
+        </h3>
 
 
-<h3>
+        <p>
 
-🧠 它是什么？
+        ${safe(
+        analysis["一句话介绍"]
+        )}
 
-</h3>
+        </p>
 
 
 
-<p>
 
-${safe(
-analysis["一句话介绍"]
-)}
 
-</p>
 
 
 
+        <h3>
 
+        🚀 怎么玩？
 
+        </h3>
 
 
-<h3>
+        <p>
 
-🚀 可以怎么玩？
 
-</h3>
+        ${
+        play.length
 
+        ?
 
+        play
+        .slice(0,3)
+        .map(
+        x=>"✅ "+x
+        )
+        .join("<br>")
 
-<p>
+        :
 
+        "查看源码体验"
 
-${
-things.length
+        }
 
-?
 
-things.slice(0,3)
-.map(
-x=>"✅ "+x
-)
-.join("<br>")
+        </p>
 
-:
 
-"查看源码体验"
 
-}
 
 
 
-</p>
 
+        <div class="card-buttons">
 
 
+        <a
 
+        href="${project.url}"
 
+        target="_blank">
 
+        🚀 查看源码
 
+        </a>
 
-<h3>
 
-👨‍🎓 适合
 
-</h3>
+        <button
 
+        onclick="favoriteProject('${project.name}')">
 
-<p>
+        ⭐ 收藏
 
+        </button>
 
-${
-people.length
 
-?
 
-people.slice(0,2)
-.join("、")
+        </div>
 
-:
 
-"开发学习者"
 
-}
-
-
-</p>
-
-
-
-
-
-
-
-<a
-
-class="github-btn"
-
-href="${project.url}"
-
-target="_blank">
-
-
-查看源码 🚀
-
-
-</a>
-
-
-
-
-`;
+        `;
 
 
 
@@ -394,6 +382,161 @@ target="_blank">
 
     });
 
+
+}
+
+
+
+
+
+
+
+
+
+// 分类筛选
+
+
+function filterCategory(category){
+
+
+
+    const result =
+    allProjects.filter(project=>{
+
+
+        const analysis =
+        project.analysis || {};
+
+
+
+        const fields =
+        array(
+        analysis["所属领域"]
+        );
+
+
+
+        return fields.some(item=>{
+
+
+            return item
+            .toLowerCase()
+            .includes(
+            category.toLowerCase()
+            );
+
+
+        });
+
+
+
+    });
+
+
+
+
+    renderProjects(result);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// 显示全部
+
+
+function showAll(){
+
+
+    renderProjects(allProjects);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// 滚动到项目
+
+
+function scrollProjects(){
+
+
+    document
+    .getElementById("projects")
+    .scrollIntoView({
+
+        behavior:"smooth"
+
+    });
+
+
+}
+
+
+
+
+
+
+
+
+// 收藏预留
+
+
+function favoriteProject(name){
+
+
+
+    let favorites =
+    JSON.parse(
+    localStorage.getItem("favorites")
+    || "[]"
+    );
+
+
+
+    if(!favorites.includes(name)){
+
+
+        favorites.push(name);
+
+
+        localStorage.setItem(
+
+        "favorites",
+
+        JSON.stringify(favorites)
+
+        );
+
+
+        alert(
+        "收藏成功 ⭐"
+        );
+
+
+    }else{
+
+
+        alert(
+        "已经收藏过了"
+        );
+
+
+    }
 
 
 }

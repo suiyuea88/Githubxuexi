@@ -5,11 +5,9 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>
-GitHub学习馆
-</title>
+<title>GitHub学习馆</title>
 
 
 <link rel="stylesheet" href="style.css">
@@ -21,126 +19,88 @@ GitHub学习馆
 <body>
 
 
-<header>
+<header class="hero">
+
 
 <h1>
 🔥 GitHub学习馆
 </h1>
 
+
 <p>
 每日发现值得学习的开源项目
 </p>
 
+
 </header>
 
 
-<div class="category-bar">
+
+
+
+<!-- 分类导航 -->
+
+<nav class="category-bar">
 
 
 <button onclick="filterProjects('all')">
-
 🔥 全部
-
 </button>
 
 
-
 <button onclick="filterProjects('人工智能')">
-
 🤖 AI神器
-
 </button>
 
 
 
 <button onclick="filterProjects('Python')">
-
 🐍 Python
-
 </button>
 
 
 
 <button onclick="filterProjects('开发工具')">
-
 💻 开发工具
-
 </button>
 
 
 
 <button onclick="filterProjects('Web开发')">
-
 🌐 Web
-
 </button>
 
 
 
 <button onclick="filterProjects('开源技术')">
-
 ⭐ 开源项目
-
-</button>
-
-
-</div>
-  
-<main id="projects">
-<div class="category-bar">
-
-
-<button onclick="filterProjects('all')">
-
-🔥 全部
-
 </button>
 
 
 
-<button onclick="filterProjects('人工智能')">
-
-🤖 AI神器
-
-</button>
+</nav>
 
 
 
-<button onclick="filterProjects('Python')">
-
-🐍 Python
-
-</button>
 
 
 
-<button onclick="filterProjects('开发工具')">
-
-💻 开发工具
-
-</button>
+<main>
 
 
-
-<button onclick="filterProjects('Web开发')">
-
-🌐 Web
-
-</button>
+<div id="projects">
 
 
-
-<button onclick="filterProjects('开源技术')">
-
-⭐ 开源项目
-
-</button>
-
-
-</div>
 正在加载今日热门项目...
 
+
+</div>
+
+
 </main>
+
+
+
 
 
 

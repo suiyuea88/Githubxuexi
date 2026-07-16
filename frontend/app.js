@@ -3,6 +3,7 @@ const API_URL = "https://githubxuexi.onrender.com/projects";
 
 const projectsBox = document.getElementById("projects");
 
+let allProjects = [];
 
 
 // 安全读取
@@ -58,11 +59,12 @@ fetch(API_URL)
 .then(projects => {
 
 
-    projectsBox.innerHTML = "";
+    allProjects = projects;
 
 
 
-    projects.forEach(project => {
+    renderProjects(projects); 
+    })
 
 
 

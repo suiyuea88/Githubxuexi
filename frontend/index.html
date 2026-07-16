@@ -5,13 +5,11 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>GitHub学习馆</title>
 
-
 <link rel="stylesheet" href="style.css">
-
 
 </head>
 
@@ -19,17 +17,21 @@
 <body>
 
 
-<header class="hero">
+<header class="top">
 
 
-<h1>
+<div class="logo">
+
 🔥 GitHub学习馆
-</h1>
+
+</div>
 
 
-<p>
-每日发现值得学习的开源项目
-</p>
+<div class="subtitle">
+
+每日发现值得体验的开源项目
+
+</div>
 
 
 </header>
@@ -37,64 +39,100 @@
 
 
 
-
-<!-- 分类导航 -->
-
-<nav class="category-bar">
+<section class="today">
 
 
-<button onclick="filterProjects('all')">
-🔥 全部
-</button>
+<div class="today-left">
 
 
-<button onclick="filterProjects('人工智能')">
-🤖 AI神器
-</button>
+<div class="small">
+
+今日发现
+
+</div>
 
 
+<div class="date">
 
-<button onclick="filterProjects('Python')">
-🐍 Python
-</button>
+01
 
-
-
-<button onclick="filterProjects('开发工具')">
-💻 开发工具
-</button>
+</div>
 
 
+<div>
 
-<button onclick="filterProjects('Web开发')">
-🌐 Web
-</button>
+热门开源项目
 
+</div>
 
-
-<button onclick="filterProjects('开源技术')">
-⭐ 开源项目
-</button>
-
-
-
-</nav>
-
-
-
-
-
-
-<main>
-
-
-<div id="projects">
-
-
-正在加载今日热门项目...
 
 
 </div>
+
+
+
+
+<div class="today-right">
+
+
+<h1>
+
+探索开源世界
+
+</h1>
+
+
+<p>
+
+发现 AI、工具、自动化和有趣项目
+
+</p>
+
+
+<button>
+
+开始探索
+
+</button>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+<div class="category">
+
+
+<button>🔥 热门</button>
+
+<button>🤖 AI神器</button>
+
+<button>🎨 创意工具</button>
+
+<button>⚙️ 自动化</button>
+
+<button>💻 开发工具</button>
+
+<button>🐍 Python</button>
+
+
+</div>
+
+
+
+
+
+
+<main id="projects">
+
+
+正在发现今日项目...
 
 
 </main>
@@ -108,6 +146,5 @@
 
 
 </body>
-
 
 </html>

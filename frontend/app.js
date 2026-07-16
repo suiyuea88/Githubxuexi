@@ -203,11 +203,9 @@ fetch(API)
 
 .catch(error=>{
 
+console.error(error);
 
-    document.getElementById(
-        "projects"
-    ).innerHTML =
-    "加载失败，请检查接口";
-
+document.getElementById("projects").innerHTML =
+"加载失败：" + error.message;
 
 });

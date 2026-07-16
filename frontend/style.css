@@ -23,7 +23,9 @@ url("./chinese-bg.png");
 
 background-size:cover;
 
+
 background-position:center;
+
 
 background-attachment:fixed;
 
@@ -41,11 +43,7 @@ serif;
 
 
 
-
-
-
-
-/* 顶部 */
+/* 顶部导航 */
 
 
 .header{
@@ -138,6 +136,9 @@ margin:0;
 font-size:23px;
 
 
+font-weight:500;
+
+
 }
 
 
@@ -155,7 +156,6 @@ color:#8b7b69;
 
 
 }
-
 
 
 
@@ -187,15 +187,12 @@ color:#75695d;
 
 
 
-nav a.active{
+nav a:hover{
 
 
 color:#9f3d35;
 
 
-font-weight:bold;
-
-
 }
 
 
@@ -204,91 +201,7 @@ font-weight:bold;
 
 
 
-
-.search{
-
-
-font-size:22px;
-
-
-}
-
-
-
-
-
-
-
-
-
-/* 快捷按钮 */
-
-
-.quick-actions{
-
-
-max-width:1200px;
-
-
-margin:25px auto;
-
-
-display:flex;
-
-
-gap:15px;
-
-
-}
-
-
-
-.quick-actions button{
-
-
-background:#faf7ef;
-
-
-border:1px solid #e5dccb;
-
-
-padding:12px 25px;
-
-
-cursor:pointer;
-
-
-font-size:15px;
-
-
-border-radius:30px;
-
-
-transition:.3s;
-
-
-}
-
-
-
-.quick-actions button:hover{
-
-
-background:#9f3d35;
-
-
-color:white;
-
-
-}
-
-
-
-
-
-
-
-/* 推荐区域 */
+/* 首页推荐区域 */
 
 
 .recommend{
@@ -359,21 +272,6 @@ margin:25px 0;
 
 
 
-.divider{
-
-
-height:1px;
-
-
-background:#ffffff55;
-
-
-margin:30px 0;
-
-
-}
-
-
 
 .recommend-item{
 
@@ -388,6 +286,7 @@ margin-bottom:15px;
 
 
 }
+
 
 
 
@@ -420,57 +319,9 @@ font-weight:500;
 
 
 
-.feature-box{
 
 
-display:flex;
-
-
-gap:20px;
-
-
-margin-top:35px;
-
-
-}
-
-
-
-.feature-box div{
-
-
-background:#f1e8d8;
-
-
-padding:20px;
-
-
-text-align:center;
-
-
-}
-
-
-
-
-
-button{
-
-
-cursor:pointer;
-
-
-}
-
-
-
-
-
-
-
-
-
-/* 项目区域 */
+/* 项目列表 */
 
 
 #projects{
@@ -495,23 +346,19 @@ gap:25px;
 
 
 
-
 .card{
 
 
 background:rgba(255,253,248,.95);
 
 
-border-radius:18px;
-
-
 border:1px solid #e7dcc9;
 
 
+border-radius:18px;
+
+
 padding:25px;
-
-
-min-height:320px;
 
 
 box-shadow:
@@ -520,20 +367,6 @@ box-shadow:
 
 
 }
-
-
-
-.card:hover{
-
-
-transform:translateY(-5px);
-
-
-transition:.3s;
-
-
-}
-
 
 
 
@@ -550,27 +383,13 @@ font-size:24px;
 
 
 
-
-.card h3{
-
-
-font-size:16px;
-
-
-margin-top:22px;
-
-
-}
-
-
-
 .card p{
 
 
-font-size:14px;
-
-
 line-height:1.8;
+
+
+font-size:14px;
 
 
 color:#665b50;
@@ -596,10 +415,10 @@ padding:5px 12px;
 border-radius:20px;
 
 
-margin:3px;
-
-
 font-size:12px;
+
+
+margin:3px;
 
 
 }
@@ -607,11 +426,6 @@ font-size:12px;
 
 
 
-
-
-
-
-/* 项目按钮 */
 
 
 .card-buttons{
@@ -623,7 +437,7 @@ display:flex;
 gap:10px;
 
 
-margin-top:25px;
+margin-top:20px;
 
 
 }
@@ -631,36 +445,7 @@ margin-top:25px;
 
 
 
-.card-buttons a{
-
-
-flex:1;
-
-
-background:#332b26;
-
-
-color:white;
-
-
-text-align:center;
-
-
-padding:10px;
-
-
-border-radius:8px;
-
-
-text-decoration:none;
-
-
-font-size:14px;
-
-
-}
-
-
+.card-buttons a,
 
 
 .card-buttons button{
@@ -669,16 +454,22 @@ font-size:14px;
 flex:1;
 
 
-background:#9f3d35;
+padding:10px;
+
+
+border-radius:8px;
+
+
+text-align:center;
+
+
+text-decoration:none;
 
 
 border:none;
 
 
-color:white;
-
-
-border-radius:8px;
+cursor:pointer;
 
 
 font-size:14px;
@@ -688,16 +479,26 @@ font-size:14px;
 
 
 
+.card-buttons a{
+
+
+background:#332b26;
+
+
+color:white;
+
+
+}
 
 
 
+.card-buttons button{
 
 
+background:#9f3d35;
 
-.github-btn{
 
-
-display:none;
+color:white;
 
 
 }
@@ -708,26 +509,220 @@ display:none;
 
 
 
-.hidden-section{
+/* ================= */
+/* 详情页 */
+/* ================= */
 
 
-max-width:1200px;
 
 
-margin:40px auto;
+
+.detail-container{
 
 
-background:white;
+max-width:1100px;
 
 
-padding:30px;
+margin:50px auto;
 
 
-border-radius:15px;
+padding:20px;
 
 
 }
 
+
+
+
+
+.detail-card{
+
+
+background:rgba(250,247,239,.95);
+
+
+border-radius:22px;
+
+
+padding:45px;
+
+
+box-shadow:
+
+0 20px 50px rgba(70,40,20,.12);
+
+
+}
+
+
+
+
+
+.detail-title{
+
+
+display:flex;
+
+
+justify-content:space-between;
+
+
+align-items:center;
+
+
+border-bottom:1px solid #e5dccb;
+
+
+padding-bottom:25px;
+
+
+}
+
+
+
+.detail-title h1{
+
+
+font-size:38px;
+
+
+color:#9f3d35;
+
+
+font-weight:500;
+
+
+}
+
+
+
+
+
+.detail-card section{
+
+
+margin-top:35px;
+
+
+padding-bottom:25px;
+
+
+border-bottom:1px solid #eee2d0;
+
+
+}
+
+
+
+
+
+.detail-card h2{
+
+
+font-size:22px;
+
+
+color:#9f3d35;
+
+
+}
+
+
+
+
+
+.detail-card p{
+
+
+font-size:17px;
+
+
+line-height:2;
+
+
+color:#5d534a;
+
+
+}
+
+
+
+
+
+.detail-buttons{
+
+
+display:flex;
+
+
+gap:20px;
+
+
+margin-top:40px;
+
+
+}
+
+
+
+.detail-buttons a,
+
+
+.detail-buttons button{
+
+
+flex:1;
+
+
+padding:15px;
+
+
+border-radius:10px;
+
+
+text-align:center;
+
+
+text-decoration:none;
+
+
+border:none;
+
+
+font-size:16px;
+
+
+cursor:pointer;
+
+
+}
+
+
+
+
+.detail-buttons a{
+
+
+background:#332b26;
+
+
+color:white;
+
+
+}
+
+
+
+.detail-buttons button{
+
+
+background:#9f3d35;
+
+
+color:white;
+
+
+}
 
 
 
@@ -736,7 +731,6 @@ border-radius:15px;
 
 
 @media(max-width:900px){
-
 
 
 .header{
@@ -759,26 +753,13 @@ display:none;
 
 
 
-.quick-actions{
-
-
-overflow:auto;
-
-
-padding:0 20px;
-
-
-}
-
-
-
 .recommend{
 
 
-margin:20px;
-
-
 display:block;
+
+
+margin:20px;
 
 
 }
@@ -802,6 +783,26 @@ grid-template-columns:1fr;
 
 
 margin:20px;
+
+
+}
+
+
+
+.detail-card{
+
+
+padding:25px;
+
+
+}
+
+
+
+.detail-title{
+
+
+display:block;
 
 
 }

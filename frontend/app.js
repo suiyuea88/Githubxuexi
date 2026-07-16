@@ -17,178 +17,125 @@ fetch(API)
 
         html += `
 
-        <div class="card">
+<div class="card">
 
 
-            <h2>
-            🔥 ${project.name}
-            </h2>
+<h2>
+🔥 ${project.name}
+</h2>
 
 
-            <p>
-            👤 作者：
-            ${project.author}
-            </p>
+
+<h3>
+🧠 一句话认识它
+</h3>
+
+<p>
+
+${project.analysis["一句话介绍"]}
+
+</p>
 
 
-            <p class="star">
-            ⭐ Star：
-            ${project.stars}
-            </p>
+
+<h3>
+🌍 所属领域
+</h3>
 
 
-            <p>
-            💻 技术语言：
-            ${project.language}
-            </p>
+<p>
+
+${project.analysis["所属领域"].join(" 、 ")}
+
+</p>
 
 
-            <hr>
 
 
-            <h3>
-            📖 项目简介
-            </h3>
+<h3>
+🚀 它能做什么？
+</h3>
 
 
-            <p>
-            <h3>
-            📖 中文简介
-            </h3>
-            
-            <p>
-            ${project.analysis["中文简介"]}
-            </p>
-            
-            
-            <h3>
-            🎯 项目分类
-            </h3>
-            
-            <p>
-            ${project.analysis["项目分类"]}
-            </p>
-            
-            
-            <h3>
-            📚 学习价值
-            </h3>
-            
-            <p>
-            ${project.analysis["学习价值"]}
-            </p>
+<p>
 
-            <h3>
-            🛠️ 如何使用
-            </h3>
-            
-            
-            <p>
-            👤 普通用户：
-            
-            ${project.analysis["使用指南"]["普通用户"]}
-            
-            </p>
-            
-            
-            <p>
-            💻 开发运行：
-            
-            ${project.analysis["使用指南"]["开发者运行"]}
-            
-            </p>
-            
-            
-            <p>
-            📦 安装方式：
-            
-            ${project.analysis["使用指南"]["安装方式"]}
-            
-            </p>
-            
-            
-            <p>
-            🪟 EXE支持：
-            
-            ${project.analysis["使用指南"]["是否支持EXE"]}
-            
-            </p>
-            
-            
-            <p>
-            🌐 网页部署：
-            
-            ${project.analysis["使用指南"]["是否支持网页部署"]}
-            
-            </p>
-            
-            
-            <p>
-            ⭐ 二次开发：
-            
-            ${project.analysis["使用指南"]["二次开发难度"]}
-            
-            </p>
-            
-           <h3>
-            🧠 推荐学习
-            </h3>
-            
-            <p>
-            
-            ${project.analysis["推荐学习"] ? project.analysis["推荐学习"].join("、") : "暂无"}
-            
-            </p>
-            
-            
-            <h3>
-            🔥 为什么热门
-            </h3>
-            
-            <p>
-            
-            ${project.analysis["为什么热门"] ? project.analysis["为什么热门"].join("、") : "暂无"}
-            
-            </p>
-            
-            
-            
-            <h3>
-            📈 难度等级
-            </h3>
-            
-            <p>
-            
-            ${project.analysis["难度等级"]}
-            
-            </p>
-            
-            
-            
-            <h3>
-            📚 学习路线
-            </h3>
-            
-            <p>
-            
-            ${project.analysis["学习路线"] ? project.analysis["学习路线"].join(" → ") : "暂无"}
-            
-            </p>
+${project.analysis["可以做什么"].join("
 
-            </p>
+✅ ")}
+
+</p>
 
 
-            <a href="${project.url}" target="_blank">
-            🔗 查看源码
-            </a>
 
 
-        </div>
+<h3>
+🎮 新手怎么玩？
+</h3>
 
-        `;
+
+<p>
+
+${project.analysis["使用指南"]["普通用户"]}
+
+</p>
 
 
-    });
+
+
+<h3>
+👨‍🎓 适合谁学习？
+</h3>
+
+
+<p>
+
+${project.analysis["适合人群"].join(" 、 ")}
+
+</p>
+
+
+
+
+<h3>
+🔥 兴趣指数
+
+</h3>
+
+
+<p>
+
+${project.analysis["兴趣指数"]}
+
+</p>
+
+
+
+
+<h3>
+📚 学习价值
+
+</h3>
+
+
+<p>
+
+${project.analysis["学习价值"]}
+
+</p>
+
+
+
+<a href="${project.url}" target="_blank">
+
+查看源码
+
+</a>
+
+
+
+</div>
+
+`;
 
 
 

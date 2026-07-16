@@ -1,5 +1,5 @@
 (function () {
-  const CACHE_KEY = "github-learning-projects-v2";
+  const CACHE_KEY = "github-learning-projects-v3-cn";
   const CACHE_TTL = 30 * 60 * 1000;
   function sessionGet(key){try{return JSON.parse(sessionStorage.getItem(key)||"null")}catch{return null}}
   function sessionSet(key,value){try{sessionStorage.setItem(key,JSON.stringify(value))}catch{}}
@@ -43,8 +43,11 @@
     const language = repo.language || "多语言";
     const text = `${repo.description || ""} ${(repo.topics || []).join(" ")}`.toLowerCase();
     const category = /(ai|llm|agent|model|machine-learning)/.test(text) ? "人工智能" : /(web|frontend|website|browser)/.test(text) ? "Web开发" : language === "Python" ? "Python项目" : "开源项目";
+    const chineseSummary=/(ocr|text recognition)/.test(text)?"这是一个文字识别（OCR）项目，可从图片或扫描内容中提取文字，适合文档数字化和资料整理。":/(documentation|docs|codebase|wiki)/.test(text)?"这是一个代码文档与知识库工具，可帮助生成和维护项目说明。":/(llm|large language model|glm|inference|ai model)/.test(text)?"这是一个大语言模型相关项目，主要用于本地运行、推理或优化 AI 模型。":/(agent|copilot)/.test(text)?"这是一个 AI 智能体项目，可自动执行任务、调用工具或协助编程。":/(telegram|discord|chatbot|\bbot\b)/.test(text)?"这是一个聊天机器人项目，可用于消息回复、群组管理或自动化服务。":/(scraper|crawler|spider)/.test(text)?"这是一个数据采集项目，可自动抓取和整理网页信息。":/(automation|workflow)/.test(text)?"这是一个自动化工具，可把重复操作编排成工作流，提高处理效率。":/(security|vulnerability|pentest)/.test(text)?"这是一个网络安全工具，主要用于安全检测、漏洞分析或风险排查。":category==="Web开发"?`这是一个以${language}为主的 Web 项目，可用于搭建网站或浏览器应用。`:`这是一个以${language}为主的${category}开源项目，可用于学习真实代码结构和二次开发。`;
     return {
-      "一句话介绍": repo.description || "作者暂未提供简介，建议进入 README 查看完整说明。",
+      "一句话介绍": chineseSummary,
+      "中文简介": chineseSummary,
+      "原始简介": repo.description || "作者暂未提供简介",
       "所属领域": [category, language, ...(repo.topics || []).slice(0, 2)],
       "可以做什么": ["体验项目的核心功能", "阅读真实开源项目的目录和代码", "参考实现方式进行练习或二次开发"],
       "为什么值得玩": `这是近期受到关注的${category}项目，可先体验功能，再通过 README 和源码理解实现方法。`,
@@ -173,9 +176,9 @@
     const raw=String(query||"").trim();if(raw.length<2)throw new Error("请至少输入 2 个字符");
     const aliases={"tg机器人":"telegram bot","telegram机器人":"telegram bot","电报机器人":"telegram bot","人工智能":"artificial intelligence","聊天机器人":"chatbot","爬虫":"web scraper","自动化":"automation","小程序":"mini app","翻译":"translator"};
     const normalized=aliases[raw.toLowerCase()]||raw,configured=String(window.GITHUB_LEARNING_API_BASE||"").replace(/\/$/,""),q=encodeURIComponent(raw),pageNumber=Math.min(Math.max(Number(page)||1,1),10);
-    const urls=[...new Set([...(configured?[`${configured}/api/search?q=${q}&page=${pageNumber}`]:[]),`/api/search?q=${q}&page=${pageNumber}`,`/search?q=${q}&page=${pageNumber}`])];
-    for(const url of urls){try{const payload=await fetchJson(url,20000);if(Array.isArray(payload.projects)){rememberSearch(payload.projects,pageNumber);return {...payload,source:"backend"}}}catch{}}
-    try{const payload=await fetchJson(`https://api.github.com/search/repositories?q=${encodeURIComponent(normalized)}&sort=stars&order=desc&per_page=20&page=${pageNumber}`,20000),projects=(payload.items||[]).map(normalize),total=Math.min(Number(payload.total_count)||projects.length,1000);rememberSearch(projects,pageNumber);return {query:raw,github_query:normalized,projects,page:pageNumber,total_count:total,has_more:pageNumber*20<total&&projects.length>0,source:"github"}}catch{throw new Error("暂时无法连接 GitHub 全站搜索")}
+    const cacheKey=`search:${normalized}:${pageNumber}`,urls=[...new Set([...(configured?[`${configured}/api/search?q=${q}&page=${pageNumber}`]:[]),`/api/search?q=${q}&page=${pageNumber}`,`/search?q=${q}&page=${pageNumber}`])];
+    for(const url of urls){try{const payload=await fetchJson(url,20000);if(!payload.error&&Array.isArray(payload.projects)&&payload.projects.length){rememberSearch(payload.projects,pageNumber);sessionSet(cacheKey,payload);return {...payload,source:"backend"}}}catch{}}
+    try{const payload=await fetchJson(`https://api.github.com/search/repositories?q=${encodeURIComponent(normalized)}&sort=stars&order=desc&per_page=20&page=${pageNumber}`,20000),projects=(payload.items||[]).map(normalize),total=Math.min(Number(payload.total_count)||projects.length,1000);if(!projects.length)throw new Error("empty");const result={query:raw,github_query:normalized,projects,page:pageNumber,total_count:total,has_more:pageNumber*20<total&&projects.length>0};rememberSearch(projects,pageNumber);sessionSet(cacheKey,result);return {...result,source:"github"}}catch{const cached=sessionGet(cacheKey);if(cached?.projects?.length)return {...cached,source:"cache"};throw new Error("GitHub 暂时没有返回项目，可能正在限流，请稍后重试")}
   };
   window.getLastSearchedProjects = function(){return sessionGet("search:last")||[]};
 })();

@@ -26,6 +26,34 @@ def _install_guide(language: str) -> tuple[str, str]:
     return guides.get(language, ("先查看 README、Releases 和项目根目录中的依赖文件。", "按 README 的 Quick Start、Usage 或 Getting Started 章节运行。"))
 
 
+def _chinese_summary(description: str, category: str, language: str, topics: list[str]) -> str:
+    """根据简介与标签生成首页可直接阅读的中文用途说明。"""
+    text = f"{description} {' '.join(topics)}".lower()
+    if description == "作者暂未提供项目介绍":
+        return f"这是一个以{language}为主的{category}项目，作者暂未填写简介，建议进入 README 查看功能与使用方法。"
+    rules = [
+        (("ocr", "optical character", "text recognition"), "这是一个文字识别（OCR）项目，可从图片或扫描内容中提取文字，适合文档数字化、票据识别和资料整理。"),
+        (("documentation", "docs", "codebase", "wiki"), "这是一个代码文档与知识库工具，可帮助读取代码仓库、生成或维护说明文档，方便理解项目。"),
+        (("llm", "large language model", "glm", "inference", "ai model"), "这是一个大语言模型相关项目，主要用于本地运行、推理或优化 AI 模型，适合研究模型部署。"),
+        (("agent", "multi-agent", "copilot"), "这是一个 AI 智能体项目，可自动执行任务、调用工具或协助编程，适合学习智能体工作流。"),
+        (("telegram", "discord", "chatbot", " bot "), "这是一个聊天机器人项目，可用于消息回复、群组管理或自动化服务。"),
+        (("scraper", "crawler", "crawl", "spider"), "这是一个数据采集项目，可自动抓取和整理网页信息，适合学习爬虫与数据清洗。"),
+        (("automation", "workflow", "automate"), "这是一个自动化工具，可把重复操作编排成工作流，提高开发、运维或日常任务效率。"),
+        (("security", "vulnerability", "pentest", "scanner"), "这是一个网络安全工具，主要用于安全检测、漏洞分析或风险排查，请在合法授权环境中使用。"),
+        (("data science", "dataset", "analytics", "visualization"), "这是一个数据处理与分析项目，可用于整理数据、统计分析或可视化展示。"),
+        (("game", "engine", "gamedev"), "这是一个游戏开发相关项目，包含引擎、工具或示例代码，可用于学习游戏制作。"),
+        (("android", "ios", "mobile", "flutter", "react native"), "这是一个移动应用项目，可用于 Android 或 iOS 开发，适合学习手机端功能和跨平台技术。"),
+    ]
+    for keywords, summary in rules:
+        if any(word in text for word in keywords):
+            return summary
+    if category == "Web开发":
+        return f"这是一个以{language}为主的 Web 项目，可用于搭建网站或浏览器应用，适合学习网页功能开发。"
+    if category == "开发工具":
+        return f"这是一个以{language}为主的开发效率工具，可辅助编程、构建或项目管理。"
+    return f"这是一个以{language}为主的{category}开源项目，可用于体验真实功能、学习代码结构和二次开发。"
+
+
 def analyze_project(repo: dict) -> dict:
     name = repo.get("name") or "未命名项目"
     description = (repo.get("description") or "作者暂未提供项目介绍").strip()
@@ -37,9 +65,12 @@ def analyze_project(repo: dict) -> dict:
     has_releases = bool(repo.get("has_releases"))
     has_docker = "docker" in [topic.lower() for topic in topics]
     difficulty = "入门" if language in ("HTML", "CSS") else "中等"
+    chinese_summary = _chinese_summary(description, category, language, topics)
 
     return {
-        "一句话介绍": description,
+        "一句话介绍": chinese_summary,
+        "中文简介": chinese_summary,
+        "原始简介": description,
         "所属领域": [category, language, *topics[:2]],
         "可以做什么": [
             "体验项目提供的核心能力",

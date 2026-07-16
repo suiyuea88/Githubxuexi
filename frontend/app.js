@@ -3,15 +3,18 @@ const API_URL = "https://githubxuexi.onrender.com/projects";
 
 const projectsBox = document.getElementById("projects");
 
+
 let allProjects = [];
 
 
-// 安全读取
-function safeText(value, defaultText="暂无") {
+
+// 安全文字
+
+function safeText(value){
 
     if(value === undefined || value === null || value === ""){
 
-        return defaultText;
+        return "暂无";
 
     }
 
@@ -20,52 +23,108 @@ function safeText(value, defaultText="暂无") {
 }
 
 
+
 // 安全数组
+
 function safeArray(value){
 
     if(Array.isArray(value)){
 
-        return value.join(" 、 ");
+        return value;
 
     }
 
-    return "暂无";
+    return [];
 
 }
 
 
 
+
 // 加载项目
+
 
 fetch(API_URL)
 
 
-.then(response => {
+.then(res => {
 
 
-    if(!response.ok){
+    if(!res.ok){
 
-        throw new Error("接口访问失败");
+        throw new Error("接口错误");
 
     }
 
 
-    return response.json();
+    return res.json();
 
 
 })
 
 
-.then(projects => {
+.then(data=>{
 
 
-    allProjects = projects;
+    allProjects = data;
+
+
+    renderProjects(allProjects);
+
+
+})
+
+
+.catch(err=>{
+
+
+    console.error(err);
+
+
+    projectsBox.innerHTML = `
+
+    <div class="error">
+
+    加载失败：${err.message}
+
+    </div>
+
+    `;
+
+
+});
 
 
 
-    renderProjects(projects); 
-    })
 
+
+
+// 渲染项目
+
+
+function renderProjects(projects){
+
+
+    projectsBox.innerHTML = "";
+
+
+
+    if(projects.length===0){
+
+
+        projectsBox.innerHTML =
+        "<p>暂无项目</p>";
+
+
+        return;
+
+
+    }
+
+
+
+
+    projects.forEach(project=>{
 
 
         const analysis = project.analysis || {};
@@ -74,267 +133,220 @@ fetch(API_URL)
 
 
 
+        const card=document.createElement("div");
 
-        const card = document.createElement("div");
 
+        card.className="card";
 
-        card.className = "card";
 
 
+        card.innerHTML=`
 
-card.innerHTML = `
 
-<div class="project-header">
 
+        <div class="project-title">
 
-<h2>
-🔥 ${safeText(project.name)}
-</h2>
 
+        <h2>
+        🔥 ${safeText(project.name)}
+        </h2>
 
-<div class="tags">
 
+        <div class="tags">
 
-<span class="tag">
-⭐ ${safeText(project.stars)}
-</span>
 
+        <span>
+        ⭐ ${safeText(project.stars)}
+        </span>
 
-<span class="tag">
-💻 ${safeText(project.language)}
-</span>
 
+        <span>
+        💻 ${safeText(project.language)}
+        </span>
 
 
-</div>
+        </div>
 
 
-</div>
+        </div>
 
 
 
 
-<div class="section">
 
+        <h3>
+        🧠 一句话认识
+        </h3>
 
-<h3>
-🧠 一句话认识
-</h3>
 
+        <p>
 
-<p>
+        ${safeText(
+        analysis["一句话介绍"]
+        )}
 
-${safeText(
-analysis["一句话介绍"]
-)}
+        </p>
 
-</p>
 
 
-</div>
 
 
 
+        <h3>
+        🌍 所属领域
+        </h3>
 
 
-<div class="section">
+        <div class="tags">
 
 
-<h3>
-🌍 技术领域
-</h3>
+        ${
+            safeArray(
+            analysis["所属领域"]
+            )
+            .map(
+            item=>`
+            <span class="tag">
+            ${item}
+            </span>
+            `
+            )
+            .join("")
+        }
 
 
-<div class="tags">
+        </div>
 
 
-${
 
-Array.isArray(analysis["所属领域"])
 
-?
 
-analysis["所属领域"]
-.map(item=>`
 
-<span class="tag blue">
+        <h3>
+        🚀 它能做什么
+        </h3>
 
-${item}
 
-</span>
+        <ul>
 
-`).join("")
 
-:
+        ${
+            safeArray(
+            analysis["可以做什么"]
+            )
+            .map(
+            item=>`
+            <li>${item}</li>
+            `
+            )
+            .join("")
+        }
 
-"<span>暂无</span>"
 
-}
+        </ul>
 
 
-</div>
 
 
-</div>
 
 
 
+        <div class="score-box">
 
 
+        <div>
 
-<div class="section">
+        🔥 兴趣指数
 
+        <br>
 
-<h3>
-🚀 可以做什么
-</h3>
+        ${safeText(
+        analysis["兴趣指数"]
+        )}
 
+        </div>
 
-<ul>
 
 
-${
-Array.isArray(analysis["可以做什么"])
+        <div>
 
-?
+        📚 学习价值
 
-analysis["可以做什么"]
-.map(item=>`
+        <br>
 
-<li>
-${item}
-</li>
+        ${safeText(
+        analysis["学习价值"]
+        )}
 
-`).join("")
+        </div>
 
-:
 
-"<li>暂无</li>"
+        </div>
 
-}
 
 
-</ul>
 
 
-</div>
 
 
+        <h3>
+        🎮 新手怎么玩
+        </h3>
 
 
+        <p>
 
+        ${safeText(
+        guide["普通用户"]
+        )}
 
+        </p>
 
-<div class="score-box">
 
 
-<div>
 
-🔥 兴趣指数
 
-<br>
 
-<strong>
+        <h3>
+        👨‍🎓 适合谁
+        </h3>
 
-${safeText(
-analysis["兴趣指数"]
-)}
 
-</strong>
+        <p>
 
-</div>
 
+        ${
+        safeArray(
+        analysis["适合人群"]
+        )
+        .join(" 、 ")
+        }
 
 
-<div>
+        </p>
 
-📚 学习价值
 
-<br>
 
-<strong>
 
-${safeText(
-analysis["学习价值"]
-)}
 
-</strong>
 
-</div>
 
+        <a class="github-btn"
 
+        href="${project.url}"
 
-</div>
+        target="_blank">
 
 
+        查看源码 🚀
 
 
+        </a>
 
 
 
-<div class="section">
+        `;
 
-
-<h3>
-🎮 新手怎么玩
-</h3>
-
-
-<p>
-
-${safeText(
-guide["普通用户"]
-)}
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="section">
-
-
-<h3>
-👨‍🎓 适合人群
-</h3>
-
-
-<p>
-
-${safeArray(
-analysis["适合人群"]
-)}
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-<a class="github-btn"
-
-href="${project.url}"
-
-target="_blank">
-
-查看源码 🚀
-
-</a>
-
-
-
-`;
 
 
         projectsBox.appendChild(card);
@@ -344,87 +356,54 @@ target="_blank">
     });
 
 
-
-})
-
-
-
-.catch(error => {
-
-
-    console.error(error);
-
-
-    projectsBox.innerHTML = `
-
-    <h3>
-    加载失败
-    </h3>
-
-
-    <p>
-    ${error.message}
-    </p>
-
-
-    `;
-
-
-});
-function renderProjects(projects){
-
-
-projectsBox.innerHTML="";
-
-
-
-projects.forEach(project=>{
-
-
-// 这里保留你现在的 card 创建代码
-
-
-});
-
-
 }
 
 
+
+
+
+
+
+
+// 分类筛选
 
 
 function filterProjects(category){
 
 
 
-if(category==="all"){
+    if(category==="all"){
 
 
-renderProjects(allProjects);
+        renderProjects(allProjects);
 
 
-return;
+        return;
 
 
-}
-
-
-
-const result =
-allProjects.filter(project=>{
-
-
-const fields =
-project.analysis["所属领域"] || [];
-
-
-return fields.includes(category);
-
-
-});
+    }
 
 
 
-renderProjects(result);
+
+    const result =
+    allProjects.filter(project=>{
+
+
+        const fields =
+        project.analysis?.["所属领域"] || [];
+
+
+
+        return fields.includes(category);
+
+
+
+    });
+
+
+
+    renderProjects(result);
 
 
 

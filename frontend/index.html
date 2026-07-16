@@ -17,6 +17,7 @@
       <button onclick="filterCategory('AI')">AI研习</button>
       <button onclick="scrollProjects()">项目藏馆</button>
       <button onclick="openTranslator()">小白翻译</button>
+      <button onclick="openLearningCenter()">学习中心</button>
       <button onclick="showFavorites()">我的收藏</button>
     </nav>
     <button class="mobile-catalog" onclick="toggleMobileMenu()" aria-label="打开目录">☰</button>
@@ -27,6 +28,7 @@
     <button onclick="filterCategory('Python');toggleMobileMenu(false)">Python</button>
     <button onclick="filterCategory('Web');toggleMobileMenu(false)">Web 开发</button>
     <button onclick="openTranslator();toggleMobileMenu(false)">小白翻译</button>
+    <button onclick="openLearningCenter();toggleMobileMenu(false)">学习中心</button>
     <button onclick="showFavorites();toggleMobileMenu(false)">我的收藏</button>
   </div>
 
@@ -50,11 +52,12 @@
       <button onclick="filterCategory('Web')"><b>Web 开发</b><small>网站与应用</small></button>
       <button onclick="filterCategory('工具')"><b>开发工具</b><small>效率与工程</small></button>
       <button onclick="openTranslator()"><b>小白翻译</b><small>README 与报错</small></button>
+      <button onclick="openLearningCenter()"><b>学习中心</b><small>进度与路线</small></button>
       <button onclick="showFavorites()"><b>我的收藏</b><small>继续上次学习</small></button>
     </section>
 
     <section class="collection-section" id="collection">
-      <header class="collection-heading"><span>项目藏馆</span><h2>今日值得研习的开源项目</h2><p id="collection-note">先看懂，再运行，最后尝试改动一个小功能。</p></header>
+      <header class="collection-heading"><span>项目藏馆</span><h2>今日值得研习的开源项目</h2><p id="collection-note">先看懂，再运行，最后尝试改动一个小功能。</p><label class="project-search"><span>查</span><input id="project-search" type="search" placeholder="搜索项目名、语言、用途或标签" oninput="searchProjects(this.value)"><button onclick="clearProjectSearch()" type="button">清空</button></label></header>
       <div id="projects"><div class="state-card"><b>正在打开今日项目册…</b><p>正在连接开源数据。</p></div></div>
     </section>
   </main>
@@ -64,7 +67,7 @@
   <div class="lab-backdrop" id="lab" hidden>
     <section class="study-lab" role="dialog" aria-modal="true" aria-labelledby="lab-title">
       <header><div><small>知行合一 · 在线研习台</small><h2 id="lab-title">项目研习</h2></div><button onclick="closeLab()" aria-label="关闭">×</button></header>
-      <nav class="lab-tabs"><button class="active" data-tab="preview" onclick="switchLabTab(this)">在线体验</button><button data-tab="guide" onclick="switchLabTab(this)">运行指南</button><button data-tab="notes" onclick="switchLabTab(this)">学习笔记</button></nav>
+      <nav class="lab-tabs"><button class="active" data-tab="preview" onclick="switchLabTab(this)">在线体验</button><button data-tab="readme" onclick="switchLabTab(this)">README 导学</button><button data-tab="guide" onclick="switchLabTab(this)">运行指南</button><button data-tab="notes" onclick="switchLabTab(this)">学习笔记</button></nav>
       <div class="lab-body" id="lab-body"></div>
     </section>
   </div>
@@ -73,10 +76,18 @@
     <section class="translator-card" role="dialog" aria-modal="true" aria-labelledby="translator-title">
       <header><div><small>英文 README · 报错信息 · 安装说明</small><h2 id="translator-title">小白开源翻译器</h2></div><button onclick="closeTranslator()" aria-label="关闭">×</button></header>
       <div class="translator-grid">
-        <section><label>粘贴英文 <small id="translate-count">0 / 6000</small></label><textarea id="translate-source" maxlength="6000" placeholder="Paste an English README section, error message, or installation guide here..."></textarea><div class="translator-actions"><button onclick="runTranslation()">翻译成中文</button><button class="ghost" onclick="clearTranslation()">清空</button></div></section>
+        <section><label>粘贴英文或报错 <small id="translate-count">0 / 8000</small></label><textarea id="translate-source" maxlength="8000" placeholder="可粘贴英文 README、安装说明或完整报错信息…"></textarea><div class="translator-actions"><button onclick="runTranslation()">英文翻译</button><button onclick="runDiagnosis()">报错诊断</button><button class="ghost" onclick="clearTranslation()">清空</button></div></section>
         <section><label>中文结果 <small>技术命令请保持原样执行</small></label><div class="translation-result" id="translation-result"><div class="translation-empty">翻译后，这里会同时显示中文内容和开源术语解释。</div></div></section>
       </div>
-      <footer>临时翻译内容不会保存，关闭后自动清除。密码、Token 和私钥请勿粘贴。</footer>
+      <footer>临时内容不会保存，关闭后自动清除。密码、Token 和私钥请勿粘贴。</footer>
+    </section>
+  </div>
+
+  <div class="lab-backdrop" id="learning-center" hidden>
+    <section class="learning-center-card" role="dialog" aria-modal="true" aria-labelledby="learning-title">
+      <header><div><small>我的开源研习记录</small><h2 id="learning-title">学习中心</h2></div><button onclick="closeLearningCenter()" aria-label="关闭">×</button></header>
+      <div id="learning-center-body" class="learning-center-body"></div>
+      <footer><span>所有进度只保存在当前浏览器</span><button onclick="clearLearningProgress()">清除学习进度</button></footer>
     </section>
   </div>
 

@@ -1,6 +1,8 @@
 (function () {
   const CACHE_KEY = "github-learning-projects-v2";
   const CACHE_TTL = 30 * 60 * 1000;
+  function sessionGet(key){try{return JSON.parse(sessionStorage.getItem(key)||"null")}catch{return null}}
+  function sessionSet(key,value){try{sessionStorage.setItem(key,JSON.stringify(value))}catch{}}
 
   function apiCandidates() {
     const configured = String(window.GITHUB_LEARNING_API_BASE || "").replace(/\/$/, "");
@@ -115,5 +117,54 @@
       } catch {}
     }
     throw new Error("翻译后端暂时不可用，请确认 Render Web Service 已启动");
+  };
+
+  window.fetchProjectReadme = async function (repository) {
+    if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) throw new Error("仓库地址不完整");
+    const cached=sessionGet(`readme:${repository}`);if(cached)return cached;
+    const configured = String(window.GITHUB_LEARNING_API_BASE || "").replace(/\/$/, "");
+    const query = encodeURIComponent(repository);
+    const urls = [...new Set([...(configured ? [`${configured}/api/readme?repo=${query}`] : []), `/api/readme?repo=${query}`, `/readme?repo=${query}`])];
+    for (const url of urls) {
+      try {
+        const payload = await fetchJson(url, 18000);
+        if (payload.content){sessionSet(`readme:${repository}`,payload);return payload;}
+      } catch {}
+    }
+    try {
+      const response = await fetch(`https://api.github.com/repos/${repository}/readme`, { headers: { Accept: "application/vnd.github.raw+json" } });
+      if (!response.ok) throw new Error(`${response.status}`);
+      const payload={ repository, content: (await response.text()).slice(0, 100000), source: "github" };sessionSet(`readme:${repository}`,payload);return payload;
+    } catch {
+      throw new Error("暂时无法读取该项目 README");
+    }
+  };
+
+  window.checkProjectRuntime = async function (repository) {
+    if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) return { runnable: false, reason: "仓库地址不完整" };
+    const cached=sessionGet(`runtime:${repository}`);if(cached)return cached;
+    const configured = String(window.GITHUB_LEARNING_API_BASE || "").replace(/\/$/, "");
+    const query = encodeURIComponent(repository);
+    const urls = [...new Set([...(configured ? [`${configured}/api/runtime-check?repo=${query}`] : []), `/api/runtime-check?repo=${query}`, `/runtime-check?repo=${query}`])];
+    for (const url of urls) {
+      try {
+        const payload = await fetchJson(url, 18000);
+        if (typeof payload.runnable === "boolean"){sessionSet(`runtime:${repository}`,payload);return payload;}
+      } catch {}
+    }
+    return { runnable: false, kind: "check-unavailable", reason: "暂时无法完成运行环境检测，为避免无限加载，已改用学习指南" };
+  };
+
+  window.diagnoseLearningError = async function (text) {
+    const configured = String(window.GITHUB_LEARNING_API_BASE || "").replace(/\/$/, "");
+    const urls = [...new Set([...(configured ? [`${configured}/api/diagnose`] : []), "/api/diagnose", "/diagnose"] )];
+    for (const url of urls) {
+      try {
+        const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+        const response=await fetch(url,{method:"POST",signal:controller.signal,headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({text})});clearTimeout(timer);
+        if(!response.ok)continue;const payload=await response.json();if(Array.isArray(payload.steps))return payload;
+      } catch {}
+    }
+    throw new Error("报错诊断服务暂时不可用");
   };
 })();

@@ -1,7 +1,5 @@
 import os
 import time
-from datetime import datetime, timedelta, timezone
-
 import requests
 
 from backend.translator import analyze_project
@@ -30,17 +28,21 @@ def get_hot_projects() -> list[dict]:
     if _cache["data"] and now < _cache["expires"]:
         return _cache["data"]
 
-    before = datetime.now(timezone.utc) - timedelta(days=30)
     response = requests.get(
         GITHUB_SEARCH_URL,
-        params={"q": f"created:>{before.date()}", "sort": "stars", "order": "desc", "per_page": 20},
+        # 不限制创建日期：查询 GitHub 历史项目，并按累计 Star 总数降序。
+        params={"q": "stars:>0", "sort": "stars", "order": "desc", "per_page": 20},
         headers=_headers(),
         timeout=15,
     )
     response.raise_for_status()
     items = response.json().get("items", [])
 
-    result = [_format_project(repo) for repo in items]
+    result = sorted(
+        (_format_project(repo) for repo in items),
+        key=lambda project: int(project.get("stars") or 0),
+        reverse=True,
+    )
 
     _cache.update({"expires": now + 900, "data": result})
     return result
@@ -66,7 +68,11 @@ def search_projects(query: str, limit: int = 20, page: int = 1) -> dict:
     )
     response.raise_for_status()
     result_payload = response.json()
-    projects = [_format_project(repo) for repo in result_payload.get("items", [])]
+    projects = sorted(
+        (_format_project(repo) for repo in result_payload.get("items", [])),
+        key=lambda project: int(project.get("stars") or 0),
+        reverse=True,
+    )
     total = min(int(result_payload.get("total_count", len(projects))), 1000)
     payload = {"projects": projects, "page": page, "total_count": total, "has_more": page * page_size < total and bool(projects)}
     _search_cache[key] = {"expires": time.time() + 600, "payload": payload}

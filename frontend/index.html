@@ -66,7 +66,7 @@
     <section class="study-utilities" aria-label="学习工具"><button onclick="openTranslator()"><b>译</b><span>小白翻译<small>README 与报错</small></span></button><button onclick="openLearningCenter()"><b>学</b><span>学习中心<small>进度与路线</small></span></button><button onclick="showFavorites()"><b>藏</b><span>我的收藏<small>继续上次学习</small></span></button></section>
 
     <section class="collection-section" id="collection">
-      <header class="collection-heading"><span>项目藏馆</span><h2>今日值得研习的开源项目</h2><p id="collection-note">今日精选 · 也可以从分类查询整个 GitHub</p><label class="project-search"><span>查</span><input id="project-search" type="search" placeholder="搜索整个 GitHub，如：TG机器人、Python 爬虫" oninput="scheduleProjectSearch(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();runGlobalSearch(this.value)}"><button onclick="clearProjectSearch()" type="button">清空</button></label></header>
+      <header class="collection-heading"><span>项目藏馆</span><h2>GitHub 高星开源项目</h2><p id="collection-note">搜索全部历史项目 · 按 Star 总数从高到低</p><label class="project-search"><span>查</span><input id="project-search" type="search" placeholder="搜索整个 GitHub，如：TG机器人、Python 爬虫" oninput="scheduleProjectSearch(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();runGlobalSearch(this.value)}"><button onclick="clearProjectSearch()" type="button">清空</button></label></header>
       <div id="projects"><div class="state-card"><b>正在打开今日项目册…</b><p>正在连接开源数据。</p></div></div>
     </section>
   </main>

@@ -1,5 +1,5 @@
 (function () {
-  const CACHE_KEY = "github-learning-projects-v3-cn";
+  const CACHE_KEY = "github-learning-projects-v4-all-time-stars";
   const CACHE_TTL = 30 * 60 * 1000;
   function sessionGet(key){try{return JSON.parse(sessionStorage.getItem(key)||"null")}catch{return null}}
   function sessionSet(key,value){try{sessionStorage.setItem(key,JSON.stringify(value))}catch{}}
@@ -77,10 +77,9 @@
   }
 
   async function githubFallback() {
-    const since = new Date(Date.now() - 14 * 86400000).toISOString().slice(0, 10);
-    const url = `https://api.github.com/search/repositories?q=created:%3E${since}+stars:%3E20&sort=stars&order=desc&per_page=12`;
+    const url = "https://api.github.com/search/repositories?q=stars:%3E0&sort=stars&order=desc&per_page=20";
     const payload = await fetchJson(url, 18000);
-    const data = (payload.items || []).map(normalize);
+    const data = (payload.items || []).map(normalize).sort((a,b)=>(Number(b.stars)||0)-(Number(a.stars)||0));
     if (!data.length) throw new Error("GitHub 暂未返回项目数据");
     return data;
   }
